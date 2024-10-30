@@ -12,7 +12,7 @@
 else
 {
     <div class="container mt-5">
-        <h3 class="text-center mb-4 page-title">Objednávka</h3>
+        <h3 class="text-center mb-4 page-title">Moje Objednávky</h3>
         <div class="d-flex justify-content-between mb-3">
             <div></div> <!-- Placeholder for alignment -->
         </div>
@@ -31,7 +31,6 @@ else
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Id</th>
                             <th>Event</th>
                             <th>Price</th>
                             <th>Quantity</th>
@@ -43,7 +42,6 @@ else
                         @foreach (var order in Model)
                         {
                             <tr>
-                                <td>@order.OrderId</td>
                                 <td>@order.EventName</td>
                                 <td>@order.Price</td>
                                 <td>@order.Quantity</td>

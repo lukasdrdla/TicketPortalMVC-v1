@@ -114,11 +114,12 @@ public class OrderService : IOrderService
             .Select(o => new UserOrderViewModel
             {
                 OrderId = o.OrderId,
-                EventName = o.OrderTickets.FirstOrDefault().Ticket.Event.Name,
-                Price = o.OrderTickets.FirstOrDefault().Ticket.Price,
-                Quantity = o.OrderTickets.Sum(ot => ot.Quantity)
+                EventName = o.OrderTickets.FirstOrDefault() != null ? o.OrderTickets.FirstOrDefault().Ticket.Event.Name : "Unknown Event",
+                Price = o.OrderTickets.FirstOrDefault() != null ? o.OrderTickets.FirstOrDefault().Ticket.Price : 0,
+                Quantity = o.OrderTickets.Any() ? o.OrderTickets.Sum(ot => ot.Quantity) : 0
             }).ToListAsync();
     }
+
 
     public async Task<Order> CreateOrderFromCart(string userId)
     {
