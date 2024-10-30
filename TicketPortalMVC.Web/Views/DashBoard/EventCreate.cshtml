@@ -1,0 +1,41 @@
+﻿@model Event
+
+@{
+    Layout = "~/Views/Shared/AdminLayout.cshtml"; // Použijeme nový layout
+}
+
+<form asp-controller="DashBoard" asp-action="EventCreate" method="post">
+    
+    <div class="form-group">
+        <label for="Name">Název</label>
+        <input asp-for="Name" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label for="Description">Popis</label>
+        <input asp-for="Description" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label for="Date">Datum</label>
+        <input asp-for="Date" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label for="Location">Místo</label>
+        <input asp-for="Location" class="form-control"/>
+    </div>
+    
+    <div class="form-group">
+        <label for="Capacity">Kapacita</label>
+        <input asp-for="Capacity" class="form-control"/>
+    </div>
+    
+    <div class="form-group">
+        <label for="Image">Obrázek</label>
+        <input asp-for="ImageUrl" class="form-control"/>
+    </div>
+
+    
+
+    <button type="submit" class="btn btn-primary">Přidat</button>
+    
+
+</form>

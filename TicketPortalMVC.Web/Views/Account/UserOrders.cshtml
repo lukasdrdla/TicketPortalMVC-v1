@@ -1,0 +1,62 @@
+@model List<TicketPortalMVC.Application.ViewModels.Order.UserOrderViewModel>
+
+@{
+    ViewData["Title"] = "UserOrders";
+}
+
+
+@if (Model == null || Model.Count == 0)
+{
+    <h1>Žádné objednávky</h1>
+}
+else
+{
+    <div class="container mt-5">
+        <h3 class="text-center mb-4 page-title">Objednávka</h3>
+        <div class="d-flex justify-content-between mb-3">
+            <div></div> <!-- Placeholder for alignment -->
+        </div>
+        @if (@Model == null)
+        {
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only"></span>
+                </div>
+                <p class="mt-2">Načítám objednávku...</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Event</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var order in Model)
+                        {
+                            <tr>
+                                <td>@order.OrderId</td>
+                                <td>@order.EventName</td>
+                                <td>@order.Price</td>
+                                <td>@order.Quantity</td>
+                                <td>@order.Total</td>
+                            </tr>
+                        }
+
+
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+
+}

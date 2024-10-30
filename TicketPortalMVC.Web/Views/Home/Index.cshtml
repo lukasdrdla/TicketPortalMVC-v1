@@ -1,0 +1,72 @@
+﻿@model List<TicketPortalMVC.Domain.Entities.Event>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div id="topEventsCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        @if (Model != null && Model.Any())
+        {
+        int index = 0; // Pomocná proměnná pro nastavení aktivní položky
+        foreach (var item in Model.Take(3))
+        {
+        <div class="carousel-item @(index == 0 ? "active" : "")">
+            <div class="card card-event shadow-lg border-0">
+                <div class="card-img-wrapper position-relative">
+                    <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 300px; object-fit: cover;">
+                </div>
+            </div>
+        </div>
+        index++; // Zvýšíme index pro další položku
+        }
+        }
+    </div>
+
+    <!-- Carousel controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#topEventsCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#topEventsCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+
+<h2 class="mt-4">Události tento měsíc</h2>
+<div class="row">
+    @if (Model != null && Model.Any())
+    {
+        var currentMonth = DateTime.Now.Month;
+        var currentYear = DateTime.Now.Year;
+        
+        var eventsThisMonth = Model.Where(e => e.Date.Month == currentMonth && e.Date.Year == currentYear).Take(3).ToList();
+
+        if (eventsThisMonth.Any())
+        {
+            foreach (var eventItem in eventsThisMonth)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-lg border-0">
+                        <img src="@eventItem.ImageUrl" class="card-img-top" alt="@eventItem.Name" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">@eventItem.Name</h5>
+                            <p class="card-text">@eventItem.Description</p>
+                            <p class="card-text"><small class="text-muted">Datum: @eventItem.Date.ToShortDateString()</small></p>
+                            <p class="card-text"><small class="text-muted">Kapacita: @eventItem.Capacity</small></p>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="col-12 text-center mt-3">
+                <a href="/udalosti" class="btn btn-primary">Zobrazit všechny události</a>
+            </div>
+        }
+        else
+        {
+            <p>Žádné události nejsou naplánovány na tento měsíc.</p>
+        }
+    }
+</div>

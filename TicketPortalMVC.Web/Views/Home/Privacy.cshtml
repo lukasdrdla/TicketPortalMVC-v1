@@ -1,0 +1,33 @@
+﻿@model TicketPortalMVC.Domain.Entities.Ticket
+
+@{
+ViewData["Title"] = "Přidat Ticket";
+}
+
+<h3>Přidat Ticket</h3>
+
+@if (TempData["SuccessMessage"] != null)
+{
+<div class="alert alert-success">
+    @TempData["SuccessMessage"]
+</div>
+}
+
+<form asp-action="AddTicket" method="post">
+    <div class="mb-3">
+        <label asp-for="EventId" class="form-label">ID Události</label>
+        <input asp-for="EventId" class="form-control" required />
+        <span asp-validation-for="EventId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Price" class="form-label">Cena</label>
+        <input asp-for="Price" class="form-control" required />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Type" class="form-label">Typ</label>
+        <input asp-for="Type" class="form-control" required />
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Přidat Ticket</button>
+</form>

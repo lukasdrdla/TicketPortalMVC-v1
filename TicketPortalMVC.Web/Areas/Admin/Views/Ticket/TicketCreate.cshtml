@@ -1,0 +1,54 @@
+﻿@model TicketViewModel
+
+@{
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center">
+                    <h2 class="card-title mb-0">Přidat nový lístek</h2>
+                </div>
+
+                <div class="card-body py-4 px-5">
+                    <form asp-area="Admin" asp-controller="Ticket" asp-action="TicketCreate" method="post">
+
+                        
+                        <div class="mb-3">
+                            <label asp-for="EventId" class="form-label fw-bold">Událost</label>
+                            <select asp-for="EventId" class="form-control">
+                                <option value="">Vyberte událost</option>
+                                @foreach (var item in Model.Events)
+                                {
+                                    <option value="@item.EventId">@item.Name</option>
+                                }
+                            </select>
+                            <span asp-validation-for="@Model.EventId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="@Model.Price" class="form-label fw-bold">Cena</label>
+                            <input asp-for="@Model.Price" class="form-control" type="number" step="0.01" required />
+                            <span asp-validation-for="@Model.Price" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label asp-for="@Model.Type" class="form-label fw-bold">Typ</label>
+                            <input asp-for="@Model.Type" class="form-control" step="0.01" required />
+                            <span asp-validation-for="@Model.Type" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Uložit nový lístek</button>
+                            <a asp-area="Admin" asp-controller="Ticket" asp-action="TicketList" class="btn btn-secondary">Zpět</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

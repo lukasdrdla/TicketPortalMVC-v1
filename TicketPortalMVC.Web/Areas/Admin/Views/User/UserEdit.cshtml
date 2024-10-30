@@ -1,0 +1,89 @@
+﻿@model User
+
+@{
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center">
+                    <h2 class="card-title mb-0">Úprava uživatele: @Model.UserName</h2>
+                    <p class="card-subtitle mt-1 text-light">@Model.Email</p>
+                </div>
+
+                <div class="card-body py-4 px-5">
+                    <form asp-area="Admin" asp-controller="User" asp-action="UserEdit" method="post">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <input asp-for="Id" type="hidden" />
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="UserName" class="form-label fw-bold">Uživatelské jméno</label>
+                                <input asp-for="UserName" class="form-control" />
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Email" class="form-label fw-bold">Email</label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="FirstName" class="form-label fw-bold">Jméno</label>
+                                <input asp-for="FirstName" class="form-control" />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="LastName" class="form-label fw-bold">Příjmení</label>
+                                <input asp-for="LastName" class="form-control" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="City" class="form-label fw-bold">Město</label>
+                                <input asp-for="City" class="form-control" />
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Country" class="form-label fw-bold">Země</label>
+                                <input asp-for="Country" class="form-control" />
+                                <span asp-validation-for="Country" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Address" class="form-label fw-bold">Adresa</label>
+                                <input asp-for="Address" class="form-control" />
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="PostalCode" class="form-label fw-bold">PSČ</label>
+                                <input asp-for="PostalCode" class="form-control" />
+                                <span asp-validation-for="PostalCode" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info d-flex align-items-center">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            ID uživatele: <strong class="ms-2">@Model.Id</strong>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Uložit změny</button>
+                            <a asp-area="Admin" asp-controller="User" asp-action="UserList" class="btn btn-secondary">Zpět</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,77 @@
+﻿@model List<Ticket>
+
+@{
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container mt-5">
+    <h3 class="text-center mb-4 page-title">Lístky</h3>
+    <div class="d-flex justify-content-end mb-4">
+        <a href="@Url.Action("TicketCreate", "Ticket")" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Přidat Lístek
+        </a>
+    </div>
+
+    @if (Model == null)
+    {
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Načítám lístky...</span>
+            </div>
+            <p class="mt-3">Načítám lístky...</p>
+        </div>
+    }
+    else if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle me-2"></i> Zatím nejsou dostupné žádné lístky.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Událost</th>
+                        <th>Cena</th>
+                        <th>Typ</th>
+                        <th class="text-end">Akce</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.TicketId</td>
+                            <td>@item.Event.Name</td>
+                            <td>@item.Price.ToString("C")</td>
+                            <td>@item.Type</td>
+                            <td class="text-end">
+                                <a href="@Url.Action("TicketDetail", "Ticket", new { id = item.TicketId })" class="btn btn-sm btn-primary me-1" title="Detail">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="@Url.Action("TicketEdit", "Ticket", new { id = item.TicketId })" class="btn btn-sm btn-warning me-1" title="Upravit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form asp-area="Admin" asp-action="TicketDelete" asp-controller="Ticket" asp-route-id="@item.TicketId" class="d-inline" onsubmit="return confirmDelete();" title="Smazat">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<script>
+    function confirmDelete() {
+        return confirm("Opravdu chcete smazat tento lístek?");
+    }
+
+</script>

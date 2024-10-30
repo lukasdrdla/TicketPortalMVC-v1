@@ -1,0 +1,59 @@
+﻿@model TicketEditViewModel
+
+@{
+    Layout = "~/Views/Shared/AdminLayout.cshtml"; // Použijeme nový layout
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center">
+                    <h2 class="card-title mb-0">Úprava Lístku: @Model.TicketId</h2>
+                    <p class="card-subtitle mt-1 text-light"></p>
+
+                </div>
+
+                <div class="card-body py-4 px-5">
+                    <form asp-area="Admin" asp-controller="Ticket" asp-action="TicketEdit" method="post">
+
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <input asp-for="TicketId" type="hidden" />
+
+                        <div class="form-group mb-3">
+                            <label asp-for="EventId" class="form-label fw-bold">Událost</label>
+                            <select asp-for="EventId" class="form-control">
+                                <option value="">Vyberte událost</option>
+                                @foreach (var item in Model.Events)
+                                {
+                                    <option value="@item.EventId">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Price" class="form-label fw-bold">Cena</label>
+                            <input type="number" asp-for="Price" class="form-control" />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Type" class="form-label fw-bold">Typ</label>
+                            <input asp-for="Type" class="form-control" />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CreatedAt" class="form-label fw-bold">Vytvořeno</label>
+                            <input asp-for="CreatedAt" class="form-control" type="datetime-local" />
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Uložit změny</button>
+                            <a asp-area="Admin" asp-controller="Ticket" asp-action="TicketList" class="btn btn-secondary">Zpět</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

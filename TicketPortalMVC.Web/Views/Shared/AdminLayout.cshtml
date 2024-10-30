@@ -1,0 +1,128 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.css">
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Navigace -->
+            <nav class="col-md-1 col-lg-1 d-md-block bg-dark sidebar position-fixed">
+                <div class="sidebar-sticky">
+                    <ul class="nav flex-column mt-4">
+                        <li class="nav-item">
+                            <a class="nav-link text-white text-center" asp-action="Index" asp-area="Admin" asp-controller="DashBoard">
+                                <i class="bi bi-house-door-fill"></i>
+                                <span class="d-block">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white text-center" asp-area="Admin" asp-action="UserList" asp-controller="User">
+                                <i class="bi bi-people-fill"></i>
+                                <span class="d-block">Uživatelé</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white text-center" asp-action="EventList" asp-area="Admin" asp-controller="Event">
+                                <i class="bi bi-calendar3"></i>
+                                <span class="d-block">Události</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white text-center" asp-action="OrderList" asp-area="Admin" asp-controller="Order">
+                                <i class="bi bi-file-earmark-text-fill"></i>
+                                <span class="d-block">Objednávky</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white text-center" asp-area="Admin" asp-action="TicketList" asp-controller="Ticket">
+                                <i class="bi bi-ticket-perforated-fill"></i>
+                                <span class="d-block">Vstupenky</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white text-center" href="@Url.Action("Index", "Events")" title="Zpět na web">
+                                <i class="bi bi-arrow-left-circle-fill"></i>
+                                <span class="d-block">Zpět na web</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Hlavní obsah -->
+            <main role="main" class="col-md-10 ms-sm-auto col-lg-10 px-md-4 pt-5">
+                <h1>@ViewData["Title"]</h1>
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
+
+    <script>
+        new DataTable('#example');
+    </script>
+</body>
+</html>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    .sidebar {
+        height: 100vh; /* Sidebar na výšku celé obrazovky */
+        padding-top: 20px;
+        background-color: #343a40;
+        overflow-y: auto; /* Možnost scrollování */
+    }
+
+    .nav-link {
+        font-size: 1.2rem;
+        color: #ffffff;
+        padding: 10px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .nav-link:hover {
+            background-color: #495057;
+            border-radius: 5px;
+        }
+
+    .nav-item {
+        margin-bottom: 1rem;
+    }
+
+    .nav-link.active {
+        background-color: #007bff;
+        border-radius: 5px;
+    }
+
+    .nav-link i {
+        font-size: 1.8rem;
+    }
+
+    .nav-link span {
+        display: block;
+        font-size: 0.85rem;
+    }
+
+    main {
+        margin-left: 16.67%; /* Posun hlavního obsahu vedle sidebaru */
+    }
+</style>

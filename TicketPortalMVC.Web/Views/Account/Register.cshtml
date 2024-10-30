@@ -1,0 +1,75 @@
+﻿@model TicketPortalMVC.Application.ViewModels.RegisterViewModel
+
+@{
+ViewData["Title"] = "Register";
+}
+
+<form asp-action="Register" asp-controller="Account" method="post">
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card shadow-lg border-0 rounded">
+                    <div class="card-body p-5">
+                        <h2 class="text-center font-weight-bold">Vytvořte svůj účet</h2>
+                        <hr>
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        @* Form Fields *@
+                        <div class="form-group">
+                            <label asp-for="FirstName" class="form-label">Křestní jméno</label>
+                            <input asp-for="FirstName" class="form-control" placeholder="Zadejte své křestní jméno" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LastName" class="form-label">Příjmení</label>
+                            <input asp-for="LastName" class="form-control" placeholder="Zadejte své příjmení" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Address" class="form-label">Adresa</label>
+                            <input asp-for="Address" class="form-control" placeholder="Zadejte svou adresu" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="City" class="form-label">Město</label>
+                            <input asp-for="City" class="form-control" placeholder="Zadejte své město" />
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PostalCode" class="form-label">PSČ</label>
+                            <input asp-for="PostalCode" class="form-control" placeholder="Zadejte PSČ" />
+                            <span asp-validation-for="PostalCode" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Country" class="form-label">Země</label>
+                            <input asp-for="Country" class="form-control" placeholder="Zadejte svou zemi" />
+                            <span asp-validation-for="Country" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber" class="form-label">Telefonní číslo</label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="Zadejte telefonní číslo" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control" placeholder="Zadejte svůj email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Password" class="form-label">Heslo</label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Zadejte heslo" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ConfirmPassword" class="form-label">Potvrzení hesla</label>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Potvrďte heslo" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-block mt-4">Registrovat</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

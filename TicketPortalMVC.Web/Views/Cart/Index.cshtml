@@ -1,0 +1,44 @@
+﻿@model List<CartItem>
+
+@{
+    ViewData["Title"] = "Košík";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Položka</th>
+                <th scope="col">Cena za kus</th>
+                <th scope="col">Množství</th>
+                <th scope="col">Celkem</th>
+                <th scope="col">Akce</th>
+            </tr>
+            </thead>
+            <tbody>
+            
+                @foreach(var item in Model)
+                {
+                    <tr>
+                    <td>@item.Ticket.Event.Name</td>
+                    <td>@item.Ticket.Price</td>
+                    <td>@item.Quantity</td>
+                    <td>@(item.Ticket.Price * item.Quantity)</td>
+                    <td>
+                    </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+        <a href="#" class="btn btn-secondary">Pokračovat v nákupu</a>
+        <a href="@Url.Action("Checkout", "Cart")" class="btn btn-primary">Přejít k platbě</a>
+    </div>
+</div>
+

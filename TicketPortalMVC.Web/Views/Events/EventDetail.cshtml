@@ -1,0 +1,74 @@
+﻿@model TicketPortalMVC.Domain.Entities.Event
+
+@{
+ViewData["Title"] = "Detail události";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center">@Model.Name</h1>
+    <div class="card mb-4 shadow">
+        <img src="@Model.ImageUrl" class="card-img-top" alt="@Model.Name" style="height: 400px; object-fit: cover;">
+        <div class="card-body">
+            <h5 class="card-title">Popis</h5>
+            <p class="card-text">@Model.Description</p>
+            <h5 class="card-title">Místo</h5>
+            <p class="card-text">@Model.Location</p>
+            <h5 class="card-title">Datum</h5>
+            <p class="card-text">@Model.Date.ToString("dd.MM.yyyy HH:mm")</p>
+            <h5 class="card-title">Kapacita</h5>
+            <p class="card-text">@Model.Capacity</p>
+        </div>
+    </div>
+
+    <div class="text-center mb-4">
+        <a asp-action="Index" class="btn btn-primary">Zpět na seznam událostí</a>
+    </div>
+
+    <h2 class="text-center mb-4">Dostupné Vstupenky</h2>
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+        <tr>
+            <th>Typ</th>
+            <th>Cena</th>
+            <th>Akce</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var ticket in Model.Tickets)
+        {
+        <tr>
+            <td>@ticket.Type</td>
+            <td>@ticket.Price.ToString("C")</td>
+            <td>
+                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline">
+                    <input type="hidden" name="ticketId" value="@ticket.TicketId" />
+                    <input type="number" name="quantity" value="1" min="1" class="form-control d-inline" style="width: 60px; display: inline-block;" />
+                    <button type="submit" class="btn btn-success">Přidat do košíku</button>
+                </form>
+            </td>
+        </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .card-title {
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .table {
+        margin-top: 20px;
+    }
+</style>

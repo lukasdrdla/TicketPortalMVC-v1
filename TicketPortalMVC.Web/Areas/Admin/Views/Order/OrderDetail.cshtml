@@ -1,0 +1,13 @@
+﻿@model OrderViewModel
+
+@{
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<span>@Model.Order.OrderId</span> <br />
+<span>@Model.Order.UserId</span> <br />
+@foreach (var item in Model.OrderTicket)
+{
+    <span>@item.TicketId</span> <br />
+    <span>@item.OrderTicketId</span>
+}

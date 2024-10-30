@@ -1,0 +1,115 @@
+﻿@model DashBoardViewModel
+
+@{
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-title">Lístky</p>
+                    <h5 class="card-text">@Model.TotalTickets</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-title">Události</p>
+                    <h5 class="card-text">@Model.TotalEvents</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-title">Objednávky</p>
+                    <h5 class="card-text">@Model.TotalOrders</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <!-- Změněno na menší šířku -->
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="dashboardChart" width="200" height="300"></canvas> <!-- Menší velikost -->
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+           
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+                <table class="table table-striped">
+                    <h3>Objednávky</h3>
+                    <thead>
+                        <tr>
+                            <th>Uživatel</th>
+                            <th>Celková cena</th>
+                            <th>Zaplaceno</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model.Orders)
+                        {
+                            <tr>
+                                <td>@order.UserId</td>
+                                <td>@order.Total</td>
+                                <td>@order.IsPaid</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                
+        </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var ctx = document.getElementById('dashboardChart').getContext('2d');
+
+        // Koláčový graf s Chart.js
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Total Tickets', 'Total Customers', 'Total Events', 'Total Orders'],
+                datasets: [{
+                    label: 'Overview',
+                    data: [@Model.TotalTickets, @Model.TotalCustomers, @Model.TotalEvents, @Model.TotalOrders],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(153, 102, 255, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Vypne zachování poměru stran
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                }
+            }
+        });
+    });
+
+</script>

@@ -1,0 +1,89 @@
+﻿@model UserDetailViewModel
+@{
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center">
+                    <h2 class="card-title mb-0">Uživatel: @Model.User.UserName</h2>
+                    <p class="card-subtitle mt-1 text-light">@Model.User.Email</p>
+                </div>
+
+                <div class="card-body py-4 px-5">
+                    <div class="row mb-3">
+                        <div class="col-12 d-flex align-items-center">
+                            <i class="bi bi-person-fill me-2 text-primary"></i>
+                            <h5 class="mb-0">Osobní Informace</h5>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Jméno</label>
+                            <p class="border p-2 rounded">@Model.User.FirstName</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Přijmení</label>
+                            <p class="border p-2 rounded">@Model.User.LastName</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Město</label>
+                            <p class="border p-2 rounded">@Model.User.City</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Země</label>
+                            <p class="border p-2 rounded">@Model.User.Country</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Adresa</label>
+                            <p class="border p-2 rounded">@Model.User.Address</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">PSČ</label>
+                            <p class="border p-2 rounded">@Model.User.PostalCode</p>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Role</label>
+                            <p class="border p-2 rounded">
+                                @foreach (var role in Model.Roles)
+                                {
+                                    <span class="badge bg-primary me-1">@role</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-info d-flex align-items-center">
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                ID uživatele: <strong class="ms-2">@Model.User.Id</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-footer text-center py-3">
+                    <a href="@Url.Action("Edit", "User", new { id = Model.User.Id })" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-pencil-square"></i> Upravit uživatele
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
