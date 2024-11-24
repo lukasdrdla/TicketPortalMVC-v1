@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using TicketPortalMVC.Application.Services.Interface;
+using TicketPortalMVC.Application.ViewModels;
 using TicketPortalMVC.Domain.Entities;
 using TicketPortalMVC.Web.Models;
 
@@ -20,7 +21,39 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         var events = await _eventService.GetEventsAsync();
-        return View(events);
+        var topEvents = events.OrderByDescending(e => e.EventRatings.Count > 0 ? e.EventRatings.Average(r => r.Rating) : 0).Take(3)
+            .Select(e => new EventViewModel
+            {
+                EventId = e.EventId,
+                Name = e.Name,
+                Description = e.Description,
+                ImageUrl = e.ImageUrl,
+                Date = e.Date,
+                Capacity = e.Capacity,
+                Location = e.Location,
+                EventRatings = e.EventRatings
+            }).ToList();
+        var  eventsThisMonth = events.Where(e => e.Date.Month == DateTime.Now.Month)
+            .Select(e => new EventViewModel
+            {
+                EventId = e.EventId,
+                Name = e.Name,
+                Description = e.Description,
+                ImageUrl = e.ImageUrl,
+                Date = e.Date,
+                Capacity = e.Capacity,
+                Location = e.Location,
+                EventRatings = e.EventRatings
+            }).ToList();
+        
+        var model = new HomePageViewModel()
+        {
+            TopEvents = topEvents,
+            EventsThisMonth = eventsThisMonth
+        };
+        
+        return View(model);
+        
     }
 
     public IActionResult Privacy()

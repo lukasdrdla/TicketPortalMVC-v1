@@ -16,26 +16,27 @@ public class EventService : IEventService
     public async Task<List<Event>> GetEventsAsync()
     {
         var events = await _context.Events
-            .Include(e => e.Tickets)
+            .Include(e => e.EventRatings)
             .ToListAsync();
         return events;
     }
 
     public async Task<Event> GetEventByIdAsync(int id)
     {
-        var @event = await _context.Events
-            .Include(e => e.Tickets) // Načtení souvisejících lístků
-            .FirstOrDefaultAsync(e => e.EventId == id); // Hledáme podle EventId
+        var eventItem = await _context.Events
+            .Include(e => e.Tickets)
+            .Include(e => e.EventRatings)
+            .FirstOrDefaultAsync(e => e.EventId == id);
 
-        if (@event == null)
+        if (eventItem == null)
         {
             throw new Exception("Event not found");
         }
         
-        return @event;
-
+        return eventItem;
     }
-
+    
+    // Admin methods
     public async Task CreateEventAsync(Event @event)
     {
         if (@event == null)
@@ -92,10 +93,10 @@ public class EventService : IEventService
 
     public async Task DeleteEventAsync(int id)
     {
-        var @event = await _context.Events.FindAsync(id);
-        if (@event != null)
+        var eventItem = await _context.Events.FindAsync(id);
+        if (eventItem != null)
         {
-            _context.Events.Remove(@event);
+            _context.Events.Remove(eventItem);
             await _context.SaveChangesAsync();
         }
         else
@@ -109,5 +110,11 @@ public class EventService : IEventService
     {
         var totalEvents = await _context.Events.CountAsync();
         return totalEvents;
+    }
+
+    public Task<List<Event>> SearchEventsAsync(string term)
+    {
+        var events = _context.Events.Where(e => e.Name.Contains(term)).ToListAsync();
+        return events;
     }
 }

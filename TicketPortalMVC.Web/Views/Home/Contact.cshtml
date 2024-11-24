@@ -1,63 +1,97 @@
 ﻿@{
-    ViewData["Title"] = "Kontakt";
+ViewData["Title"] = "Kontakt";
 }
 
-<div class="container my-5">
-    <h1 class="text-center mb-4">@ViewData["Title"]</h1>
-    
-    <div class="row">
-        <div class="col-md-6">
-            <h2>Kontaktní formulář</h2>
-            <form id="contactForm" method="post" action="/Contact/Send">
-                <div class="form-group">
-                    <label for="name">Jméno:</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">E-mail:</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="subject">Předmět:</label>
-                    <input type="text" class="form-control" id="subject" name="subject" required>
-                </div>
-                <div class="form-group">
-                    <label for="message">Zpráva:</label>
-                    <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Odeslat</button>
-            </form>
-        </div>
-        <div class="col-md-6">
-            <h2>Kontaktní informace</h2>
-            <p><strong>Adresa:</strong> Ulice 123, Město, PSČ</p>
-            <p><strong>E-mail:</strong> <a href="mailto:support@ticketportal.com">support@ticketportal.com</a></p>
-            <p><strong>Telefon:</strong> +420 123 456 789</p>
-            <h3>Sledujte nás</h3>
-            <ul class="list-inline">
-                <li class="list-inline-item"><a href="https://www.facebook.com" target="_blank">Facebook</a></li>
-                <li class="list-inline-item"><a href="https://www.twitter.com" target="_blank">Twitter</a></li>
-                <li class="list-inline-item"><a href="https://www.instagram.com" target="_blank">Instagram</a></li>
-            </ul>
-        </div>
+<div class="container py-5">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold display-5">@ViewData["Title"]</h1>
+        <p class="text-muted">Máte dotaz? Jsme tu pro vás, ať už nás kontaktujete jakýmkoliv způsobem!</p>
     </div>
 
-    <div class="row mt-5">
-        <div class="col-12">
-            <h2>Naše poloha</h2>
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2583.823619259012!2d16.612150515719594!3d49.23345627939198!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4713f1750cb5f26b%3A0x99b267d82c2baf9d!2sUlice%20123%2C%20M%C4%9Bsto%2C%20PS%C4%8C!5e0!3m2!1scs!2scz!4v1632021247100!5m2!1scs!2scz" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+    <div class="row gy-4">
+        <!-- Contact Information -->
+        <div class="col-lg-6">
+            <div class="bg-white rounded shadow p-4 h-100">
+                <h5 class="fw-bold mb-5 text-dark"><i class="bi bi-chat-left-dots"></i> Kontaktujte nás</h5>
+                <p><i class="bi bi-geo-alt text-primary"></i> <strong>Adresa:</strong> Ulice 123, Město, PSČ</p>
+                <p><i class="bi bi-envelope text-primary"></i> <strong>E-mail:</strong> <a href="mailto:support@ticketportal.com">support@ticketportal.com</a></p>
+                <p><i class="bi bi-telephone text-primary"></i> <strong>Telefon:</strong> +420 123 456 789</p>
+
+                <div class="mt-5">
+                    <h5 class="fw-bold text-dark">Sledujte nás</h5>
+                    <div class="d-flex gap-3 mt-3">
+                        <a href="https://www.facebook.com" target="_blank" class="text-primary social-icon">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://www.twitter.com" target="_blank" class="text-info social-icon">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        <a href="https://www.instagram.com" target="_blank" class="text-danger social-icon">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="https://www.linkedin.com" target="_blank" class="text-primary social-icon">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location -->
+        <div class="col-lg-6">
+            <div class="bg-white rounded shadow p-4 h-100">
+                <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-geo-alt"></i> Kde nás najdete</h5>
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2583.823619259012!2d16.612150515719594!3d49.23345627939198!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4713f1750cb5f26b%3A0x99b267d82c2baf9d!2sUlice%20123%2C%20M%C4%9Bsto%2C%20PS%C4%8C!5e0!3m2!1scs!2scz!4v1632021247100!5m2!1scs!2scz"
+                    width="100%"
+                    height="300"
+                    style="border:0; border-radius: 10px;"
+                    allowfullscreen=""
+                    loading="lazy">
+                </iframe>
+            </div>
         </div>
     </div>
 </div>
 
 <style>
-    h2 {
-        border-bottom: 2px solid #007bff;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
+    body {
+        font-family: 'Poppins', sans-serif;
     }
 
-    .list-inline-item {
-        margin-right: 15px;
+    h1, h2, h3 {
+        letter-spacing: 0.5px;
+    }
+
+    .social-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #f8f9fa;
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .social-icon:hover {
+        background-color: #0d6efd;
+        color: #fff;
+        transform: scale(1.1);
+    }
+
+    .shadow {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
     }
 </style>

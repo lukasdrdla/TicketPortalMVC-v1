@@ -10,6 +10,8 @@ public interface IEventService
     Task UpdateEventAsync(Event @event);
     Task DeleteEventAsync(int id);
 
+    // Extra methods
     Task<int> GetTotalEventsAsync();
+    Task<List<Event>> SearchEventsAsync(string term);
 
 }

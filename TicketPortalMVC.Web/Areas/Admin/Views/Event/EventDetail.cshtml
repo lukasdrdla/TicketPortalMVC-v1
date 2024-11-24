@@ -38,6 +38,26 @@
                             <p class="border p-2 rounded">@Model.Event.Capacity.ToString()</p>
                         </div>
                     </div>
+                    
+                    @if (Model.Event.EventRatings.Count > 0)
+                    {
+                        <div class="mb-3">
+                            <label class="form-label">Hodnocení:</label>
+                            <div class="border p-2 rounded">
+                                <p><strong>Celkové hodnocení:</strong> @Model.AverageRating</p>
+                                <p><strong>Počet hodnocení:</strong> @Model.Event.EventRatings.Count</p>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <strong>Událost zatím nemá žádné hodnocení.</strong>
+                        </div>
+                        
+                        
+                    }
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Cena vstupenky</label>

@@ -22,7 +22,7 @@
             <!-- Navigace -->
             <nav class="col-md-1 col-lg-1 d-md-block bg-dark sidebar position-fixed">
                 <div class="sidebar-sticky">
-                    <ul class="nav flex-column mt-4">
+                    <ul class="nav flex-column mt-1">
                         <li class="nav-item">
                             <a class="nav-link text-white text-center" asp-action="Index" asp-area="Admin" asp-controller="DashBoard">
                                 <i class="bi bi-house-door-fill"></i>
@@ -53,6 +53,13 @@
                                 <span class="d-block">Vstupenky</span>
                             </a>
                         </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link text-white text-center" asp-action="StoreList" asp-area="Admin" asp-controller="Store">
+                            <i class="bi bi-shop "></i>
+                            <span class="d-block">Obchody</span>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-white text-center" href="@Url.Action("Index", "Events")" title="Zpět na web">
                                 <i class="bi bi-arrow-left-circle-fill"></i>
@@ -75,7 +82,7 @@
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
-    <script type="text/javascript">
+<script type="text/javascript">
         $(document).ready(function () {
             $('#users').DataTable();
         });
@@ -88,6 +95,10 @@
         });
         $(document).ready(function () {
             $('#tickets').DataTable();
+        });
+        
+        $(document).ready(function () {
+            $('#stores').DataTable();
         });
         
     </script>

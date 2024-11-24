@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
 using TicketPortalMVC.Application.Services.Interface;
 using TicketPortalMVC.Application.ViewModels;
 using TicketPortalMVC.Domain.Entities;
@@ -9,14 +11,19 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
     public class EventController : Controller
     {
 
-        private readonly ITicketService _ticketService;
         private readonly IEventService _eventService;
-
-        public EventController(ITicketService ticketService, IEventService eventService)
+        private readonly IEventRatingService _eventRatingService;
+        private readonly ITicketService _ticketService;
+        
+        public EventController(IEventService eventService, IEventRatingService eventRatingService, ITicketService ticketService)
         {
-            _ticketService = ticketService;
             _eventService = eventService;
+            _eventRatingService = eventRatingService;
+            _ticketService = ticketService;
         }
+        
+   
+        
 
         /**************************************************** Event Actions ****************************************************/
 
@@ -66,13 +73,15 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
 
         public async Task<IActionResult> EventDetail(int id)
         {
-            EventDetailViewModel model = new EventDetailViewModel
+            var eventDetail = await _eventService.GetEventByIdAsync(id);
+            var eventRatings = await _eventRatingService.GetRatingsAsync(id);
+            var eventDetailViewModel = new EventDetailViewModel
             {
-                Event = await _eventService.GetEventByIdAsync(id),
-                Tickets = await _ticketService.GetTicketsAsync()
+                Event = eventDetail,
+                EventRatings = eventRatings
             };
-
-            return View(model);
+            
+            return View(eventDetailViewModel);
 
         }
 
@@ -85,7 +94,6 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Log the errors
                 foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
                 {
                     Console.WriteLine(error.ErrorMessage);

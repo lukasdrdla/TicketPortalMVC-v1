@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TicketPortalMVC.Application.Services.Interface;
-using TicketPortalMVC.Application.ViewModels.Ticket;
 using TicketPortalMVC.Domain.Entities;
 using TicketPortalMVC.Infrastructure.Data;
 
@@ -101,5 +100,13 @@ public class TicketService : ITicketService
         var totalTickets = await _context.Tickets.CountAsync();
         return totalTickets;
 
+    }
+
+    public async Task<List<Ticket>> SearchTicketsAsync(string term)
+    {
+        return await _context.Tickets
+            .Include(x => x.Event)
+            .Where(x => x.Type.Contains(term) || x.Event.Name.Contains(term))
+            .ToListAsync();
     }
 }

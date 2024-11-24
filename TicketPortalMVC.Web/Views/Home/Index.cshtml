@@ -1,29 +1,31 @@
-﻿@model List<TicketPortalMVC.Domain.Entities.Event>
+﻿@model HomePageViewModel
 @{
-    ViewData["Title"] = "Home Page";
+ViewData["Title"] = "Home Page";
 }
 
-
-<div id="topEventsCarousel" class="carousel slide" data-bs-ride="carousel">
+<!-- Carousel -->
+<div id="topEventsCarousel" class="carousel slide my-5" data-bs-ride="carousel">
     <div class="carousel-inner">
-        @if (Model != null && Model.Any())
+        @if (Model != null)
         {
-        int index = 0; // Pomocná proměnná pro nastavení aktivní položky
-        foreach (var item in Model.Take(3))
+        int index = 0;
+        foreach (var item in Model.EventsThisMonth.Take(3))
         {
         <div class="carousel-item @(index == 0 ? "active" : "")">
-            <div class="card card-event shadow-lg border-0">
+            <div class="card shadow-lg border-0">
                 <div class="card-img-wrapper position-relative">
-                    <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 300px; object-fit: cover;">
+                    <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 400px; object-fit: cover;">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>@item.Name</h5>
+                        <p>@item.Description</p>
+                    </div>
                 </div>
             </div>
         </div>
-        index++; // Zvýšíme index pro další položku
+        index++;
         }
         }
     </div>
-
-    <!-- Carousel controls -->
     <button class="carousel-control-prev" type="button" data-bs-target="#topEventsCarousel" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Previous</span>
@@ -34,39 +36,86 @@
     </button>
 </div>
 
-
-<h2 class="mt-4">Události tento měsíc</h2>
-<div class="row">
-    @if (Model != null && Model.Any())
-    {
-        var currentMonth = DateTime.Now.Month;
-        var currentYear = DateTime.Now.Year;
-        
-        var eventsThisMonth = Model.Where(e => e.Date.Month == currentMonth && e.Date.Year == currentYear).Take(3).ToList();
-
-        if (eventsThisMonth.Any())
+<!-- Události Tento Měsíc -->
+<section id="eventsThisMonth" class="container py-5">
+    <h2 class="text-center mb-4">Události Tento Měsíc</h2>
+    <div class="row g-4">
+        @if (Model != null)
         {
-            foreach (var eventItem in eventsThisMonth)
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow-lg border-0">
-                        <img src="@eventItem.ImageUrl" class="card-img-top" alt="@eventItem.Name" style="height: 200px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title">@eventItem.Name</h5>
-                            <p class="card-text">@eventItem.Description</p>
-                            <p class="card-text"><small class="text-muted">Datum: @eventItem.Date.ToShortDateString()</small></p>
-                            <p class="card-text"><small class="text-muted">Kapacita: @eventItem.Capacity</small></p>
-                        </div>
-                    </div>
+        foreach (var eventItem in Model.EventsThisMonth.Take(3))
+        {
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 hover-effect">
+                <img src="@eventItem.ImageUrl" class="card-img-top" alt="@eventItem.Name" style="height: 300px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">@eventItem.Name</h5>
+                    <p class="card-text">@eventItem.Description</p>
+                    <p class="card-text"><small class="text-muted">Datum: @eventItem.Date.ToShortDateString()</small></p>
+                    <p class="card-text"><small class="text-muted">Kapacita: @eventItem.Capacity</small></p>
                 </div>
-            }
-            <div class="col-12 text-center mt-3">
-                <a href="/udalosti" class="btn btn-primary">Zobrazit všechny události</a>
+                <div class="card-footer text-center">
+                    <a href="@Url.Action("EventDetail", "Events", new { id = eventItem.EventId })" class="btn btn-outline-primary w-100">Více informací</a>
+                </div>
             </div>
+        </div>
+        }
         }
         else
         {
-            <p>Žádné události nejsou naplánovány na tento měsíc.</p>
+        <p>Žádné události nejsou naplánovány na tento měsíc.</p>
         }
+        
+    </div>
+    <div class="text-center mt-4">
+        <a href="/udalosti" class="btn btn-primary btn-lg">Zobrazit všechny události</a>
+    </div>
+</section>
+
+<!-- Top Events Section -->
+<section id="topEvents" class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Top Události</h2>
+        <div class="row">
+            @if (Model != null)
+            { 
+                foreach (var eventItem in Model.TopEvents.Take(4))
+            {
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 shadow-lg">
+                    <img src="@eventItem.ImageUrl" class="card-img-top" alt="@eventItem.Name" style="height: 250px; object-fit: cover;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@eventItem.Name</h5>
+                        <p class="card-text">@eventItem.Description</p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="@Url.Action("EventDetail", "Events", new { id = eventItem.EventId })" class="btn btn-primary w-100">Více informací</a>
+                    </div>
+                </div>
+            </div>
+            }
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Style -->
+<style>
+    .hero {
+        background: url(images/events/image19.jpg) no-repeat center center;
+        background-size: cover;
+        color: white;
     }
-</div>
+
+    .hover-effect:hover {
+        transform: translateY(-10px);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .carousel-item img {
+        transition: transform 0.5s ease;
+    }
+
+    .carousel-item:hover img {
+        transform: scale(1.1);
+    }
+</style>

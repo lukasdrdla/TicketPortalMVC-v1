@@ -1,4 +1,4 @@
-﻿@model TicketEditViewModel
+﻿@model TicketViewModel
 
 @{
     Layout = "~/Views/Shared/AdminLayout.cshtml"; // Použijeme nový layout
@@ -21,15 +21,21 @@
 
                         <input asp-for="TicketId" type="hidden" />
 
-                        <div class="form-group mb-3">
-                            <label asp-for="EventId" class="form-label fw-bold">Událost</label>
-                            <select asp-for="EventId" class="form-control">
-                                <option value="">Vyberte událost</option>
-                                @foreach (var item in Model.Events)
-                                {
-                                    <option value="@item.EventId">@item.Name</option>
-                                }
-                            </select>
+                      
+                        
+                        <div class="mb-3">
+                            <label for="eventSearch" class="form-label fw-bold">Událost</label>
+                            <input type="text" id="eventSearch" class="form-control" placeholder="Zadejte název události" autocomplete="off"
+                                     value="@Model.EventName" />
+                            
+                            <!-- Seznam událostí, který bude dynamicky naplněn -->
+                            <ul id="eventList" class="list-group" style="display: none; max-height: 200px; overflow-y: auto;">
+                                <!-- Seznam bude naplněn dynamicky pomocí JavaScriptu -->
+                            </ul>
+                            
+                            <!-- Skrytý input pro ID události -->
+                            <input type="hidden" id="EventId" name="EventId" value="@Model.EventId" />
+                        
                         </div>
 
                         <div class="form-group mb-3">
@@ -57,3 +63,50 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const eventSearch = document.getElementById('eventSearch');
+        const eventList = document.getElementById('eventList');
+        
+                
+
+        // Funkce pro získání událostí podle vyhledávacího termínu
+        eventSearch.addEventListener('input', function () {
+            const searchTerm = eventSearch.value.trim();
+
+            if (searchTerm.length < 2) {
+                eventList.style.display = 'none';
+                return;
+            }
+
+            fetch(`/Admin/Ticket/SearchEvents?term=${searchTerm}`)
+                .then(response => response.json())
+                .then(data => {
+                    eventList.innerHTML = '';
+
+                    data.forEach(event => {
+                        const listItem = document.createElement('li');
+                        listItem.classList.add('list-group-item');
+                        listItem.textContent = event.name;
+                        listItem.addEventListener('click', function () {
+                            eventSearch.value = event.name;
+                            document.getElementById('EventId').value = event.eventId;
+                            eventList.style.display = 'none';
+                        });
+
+                        eventList.appendChild(listItem);
+                    });
+
+                    eventList.style.display = 'block';
+                });
+        });
+
+        // Skrytí seznamu událostí při kliknutí mimo něj
+        document.addEventListener('click', function (event) {
+            if (!eventList.contains(event.target) && event.target !== eventSearch) {
+                eventList.style.display = 'none';
+            }
+        });
+    });
+</script>

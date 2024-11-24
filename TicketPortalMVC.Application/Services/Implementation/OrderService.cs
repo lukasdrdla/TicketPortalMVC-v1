@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 using TicketPortalMVC.Application.Services.Interface;
-using TicketPortalMVC.Application.ViewModels.Order;
+using TicketPortalMVC.Application.ViewModels;
 using TicketPortalMVC.Domain.Entities;
 using TicketPortalMVC.Infrastructure.Data;
 
@@ -26,7 +26,9 @@ public class OrderService : IOrderService
     {
         var order = await _context.Orders
             .Include(o => o.OrderTickets)         // Načteme položky objednávky
-            .ThenInclude(ot => ot.Ticket)         // Načteme tiket ke každé položce
+            .ThenInclude(ot => ot.Ticket)
+            .ThenInclude(t => t.Event)            // Načteme události
+            .Include(o => o.User)                 // Načteme uživatele
             .FirstOrDefaultAsync(o => o.OrderId == id);
         if (order == null)
         {

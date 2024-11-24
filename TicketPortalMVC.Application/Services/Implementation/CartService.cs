@@ -20,7 +20,7 @@ public class CartService : ICartService
         var cart = await _context.Cart
             .Include(c => c.CartItems)
             .ThenInclude(ci => ci.Ticket)
-            .ThenInclude(t => t.Event) // Include Event details
+            .ThenInclude(t => t.Event)
             .FirstOrDefaultAsync(c => c.UserId == userId && c.IsActive);
 
         return cart?.CartItems.ToList() ?? new List<CartItem>();
@@ -66,9 +66,18 @@ public class CartService : ICartService
         await _context.SaveChangesAsync();
     }
 
-    public Task RemoveFromCart(string userId, int ticketId)
+    public Task RemoveFromCart(int cardItemId)
     {
-        throw new NotImplementedException();
+        var cartItem = _context.CartItems.Find(cardItemId);
+        if (cartItem == null)
+        {
+            throw new Exception("CartItem not found");
+        }
+        
+        _context.CartItems.Remove(cartItem);
+        return _context.SaveChangesAsync();
+        
+        
     }
 
     public async Task<int> GetCartItemCount(string userId)

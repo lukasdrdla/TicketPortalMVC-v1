@@ -1,4 +1,4 @@
-namespace TicketPortalMVC.Application.ViewModels.Order;
+namespace TicketPortalMVC.Application.ViewModels;
 
 public class UserOrderViewModel
 {

@@ -23,10 +23,13 @@ builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
+builder.Services.AddScoped<IEventRatingService, EventRatingService>();
 
 
 
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

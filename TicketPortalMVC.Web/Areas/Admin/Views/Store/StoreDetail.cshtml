@@ -1,0 +1,19 @@
+@model Store
+
+@{
+    ViewBag.Title = "Detail obchodu";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center">
+                    <h2 class="card-title">@Model.Name</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

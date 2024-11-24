@@ -59,11 +59,20 @@ public class CartController : Controller
         
         var cartItems = await _cartService.GetCartItems(userId);
         
+        if (cartItems.Count == 0)
+        {
+            TempData["Error"] = "Your cart is empty";
+            return RedirectToAction("Index");
+        }
+        
         var itemCount = await _cartService.GetCartItemCount(userId);
         ViewBag.ItemCount = itemCount;
         
         return View(cartItems);
     }
+    
+    [HttpPost]
+
     
     [Authorize]
     [HttpPost]
@@ -97,5 +106,12 @@ public class CartController : Controller
         }
         var order = await _orderService.GetOrderByIdAsync((int)orderId);
         return View(order);
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> RemoveFromCart(int cartItemId)
+    {
+        await _cartService.RemoveFromCart(cartItemId);
+        return RedirectToAction("Index", "Cart");
     }
 }

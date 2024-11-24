@@ -1,7 +1,22 @@
-﻿@model TicketPortalMVC.Domain.Entities.Event
+﻿@model Event
 
 @{
 ViewData["Title"] = "Detail události";
+}
+
+<!-- Zobrazení úspěšné zprávy nebo chybové zprávy -->
+@if (TempData["SuccessMessage"] != null)
+{
+<div class="alert alert-success">
+    @TempData["SuccessMessage"]
+</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
 }
 
 <div class="container mt-5">
@@ -20,8 +35,36 @@ ViewData["Title"] = "Detail události";
         </div>
     </div>
 
-    <div class="text-center mb-4">
-        <a asp-action="Index" class="btn btn-primary">Zpět na seznam událostí</a>
+    <!-- Zobrazení hodnocení -->
+    <div class="card mb-4 shadow">
+        <div class="card-body">
+            <h5 class="card-title">Hodnocení</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="card-subtitle mb-2 text-muted">Průměrné hodnocení</h6>
+                    <div class="star-rating">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                        if (i <= Math.Floor(Model.AverageRating))
+                        {
+                        <span class="star filled" data-rating="@i">&#9733;</span> <!-- Plná hvězdička -->
+                        }
+                        else
+                        {
+                        <span class="star" data-rating="@i">&#9734;</span> <!-- Prázdná hvězdička -->
+                        }
+                        }
+                    </div>
+
+                    <!-- Formulář pro odeslání hodnocení -->
+                    <form method="post" asp-action="AddRating" asp-controller="Events" id="ratingForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" name="eventId" value="@Model.EventId"/>
+                        <input type="hidden" name="rating" id="ratingInput"/>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <h2 class="text-center mb-4">Dostupné Vstupenky</h2>
@@ -50,9 +93,23 @@ ViewData["Title"] = "Detail události";
         }
         </tbody>
     </table>
+
+    <div class="text-center mb-4">
+        <a asp-action="Index" class="btn btn-primary">Zpět na seznam událostí</a>
+    </div>
 </div>
 
 <style>
+    .star-rating .star {
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #FFD700;
+    }
+
+    .star-rating .star.filled {
+        color: #FFD700;
+    }
+
     .card-title {
         font-weight: bold;
         font-size: 1.2rem;
@@ -72,3 +129,13 @@ ViewData["Title"] = "Detail události";
         margin-top: 20px;
     }
 </style>
+
+<script>
+    document.querySelectorAll(".star").forEach(star => {
+        star.addEventListener('click', (e) => {
+            var rating = e.target.getAttribute('data-rating');
+            document.getElementById('ratingInput').value = rating;
+            document.getElementById('ratingForm').submit();
+        });
+    });
+</script>

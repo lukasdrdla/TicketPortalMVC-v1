@@ -37,7 +37,6 @@
                         <th>Lokace</th>
                         <th>Datum</th>
                         <th>Kapacita</th>
-                        <th>Popis</th>
                         <th class="text-end">Akce</th>
                     </tr>
                 </thead>
@@ -48,14 +47,13 @@
                             <td>@item.EventId</td>
                             <td>@item.Name</td>
                             <td>@item.Location</td>
-                            <td>@item.Date.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
                             <td>@item.Capacity</td>
-                            <td>@item.Description</td>
                             <td class="text-end">
-                                <a href="@Url.Action("EventDetail", "Event", new { id = item.EventId })" class="btn btn-sm btn-primary me-1" title="Detail">
+                                <a href="@Url.Action("EventDetail", "Event", new { id = item.EventId })" class="btn btn-sm btn-primary" title="Detail">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="@Url.Action("EventEdit", "Event", new { id = item.EventId })" class="btn btn-sm btn-warning me-1" title="Upravit">
+                                <a href="@Url.Action("EventEdit", "Event", new { id = item.EventId })" class="btn btn-sm btn-warning" title="Upravit">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                                 <form asp-area="Admin" asp-action="EventDelete" asp-controller="Event" asp-route-id="@item.EventId" method="post" class="d-inline" onsubmit="return confirmDelete();" title="Smazat">

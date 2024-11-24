@@ -30,6 +30,15 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-title">Zákazníci</p>
+                    <h5 class="card-text">@Model.TotalCustomers</h5>
+                </div>
+            </div>
+        </div>
+        
     </div>
 
     <div class="row mt-4">
@@ -46,30 +55,31 @@
         </div>
     </div>
 
-    <div class="row mt-4">
-        <div class="col-md-12">
-                <table class="table table-striped">
-                    <h3>Objednávky</h3>
-                    <thead>
-                        <tr>
-                            <th>Uživatel</th>
-                            <th>Celková cena</th>
-                            <th>Zaplaceno</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var order in Model.Orders)
-                        {
-                            <tr>
-                                <td>@order.UserId</td>
-                                <td>@order.Total</td>
-                                <td>@order.IsPaid</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+<div class="row mt-4">
+    <div class="col-md-12">
+        <table class="table table-striped">
+            <h3>Objednávky</h3>
+            <thead>
+            <tr>
+                <th>Uživatel</th>
+                <th>Celková cena</th>
+                <th>Zaplaceno</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var order in Model.Orders)
+            {
+                <tr>
+                    <td>@order.UserId</td>
+                    <td>@order.Total</td>
+                    <td>@order.IsPaid</td>
+                </tr>
+            }
+            </tbody>
+        </table>
                 
-        </div>
+    </div>
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

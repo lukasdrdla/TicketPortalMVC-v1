@@ -7,7 +7,7 @@
 <div class="container mt-5">
     <h3 class="text-center mb-4 page-title">Objednávky</h3>
     <div class="d-flex justify-content-end mb-4">
-        <a href="@Url.Action("Create", "Admin")" class="btn btn-primary">
+        <a href="@Url.Action("OrderCreate", "Order")" class="btn btn-primary">
             <i class="bi bi-plus-circle me-1"></i> Přidat Objednávku
         </a>
     </div>
@@ -56,7 +56,7 @@
                                 <a href="@Url.Action("Edit", "Admin", new { id = item.OrderId })" class="btn btn-sm btn-warning me-1" title="Upravit">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form asp-area="Admin" asp-controller="Order" asp-action="Delete" asp-route-id="@item.OrderId" class="d-inline" onsubmit="return confirmDelete();" title="Smazat">
+                                <form asp-area="Admin" asp-controller="Order" asp-action="DeleteOrder" asp-route-id="@item.OrderId" class="d-inline" onsubmit="return confirmDelete();" title="Smazat">
                                     <button type="submit" class="btn btn-sm btn-danger" title="Smazat">
                                         <i class="bi bi-trash"></i>
                                     </button>

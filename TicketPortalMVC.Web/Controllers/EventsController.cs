@@ -7,10 +7,12 @@ namespace TicketPortalMVC.Web.Controllers;
 public class EventsController : Controller
 {
     private readonly IEventService _eventService;
+    private readonly IEventRatingService _eventRatingService;
     
-    public EventsController(IEventService eventService)
+    public EventsController(IEventService eventService, IEventRatingService eventRatingService)
     {
         _eventService = eventService;
+        _eventRatingService = eventRatingService;
     }
     
     [HttpGet("/udalosti")]
@@ -45,10 +47,41 @@ public class EventsController : Controller
     }
     
     [HttpGet("events/event-detail/{id}")]
-    public IActionResult EventDetail(int id)
+    public async Task<IActionResult> EventDetail(int id)
     {
-        var @event = _eventService.GetEventByIdAsync(id).Result;
+        var @event = await _eventService.GetEventByIdAsync(id);
+        ViewData["EventId"] = id;
+        
         return View(@event);
     }
+    
+    [HttpPost]
+    public async Task<IActionResult> AddRating(int eventId, int rating, string comment)
+    {
+        comment ??= string.Empty;
+        
+        try
+        {
+            await _eventRatingService.AddRatingAsync(eventId, rating, comment);
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = ex.Message;
+            return RedirectToAction("EventDetail", new { id = eventId });
+        }
+    
+        TempData["SuccessMessage"] = "Your rating has been successfully submitted.";
+        
+        return RedirectToAction("EventDetail", new { id = eventId });
+    }
+    
+    [HttpGet]
+    public IActionResult Search(string searchTerms)
+    {
+        var events = _eventService.GetEventsAsync().Result;
+        events = events.Where(e => e.Name.Contains(searchTerms, StringComparison.OrdinalIgnoreCase)).ToList();
+        return Json(events);
+    }
+  
     
 }

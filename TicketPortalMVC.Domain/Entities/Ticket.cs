@@ -9,4 +9,5 @@ public class Ticket
     public DateTime CreatedAt { get; set; }
     public Event Event { get; set; }
     public List<OrderTicket> OrderTickets { get; set; } = new();
+    
 }

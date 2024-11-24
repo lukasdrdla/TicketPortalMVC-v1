@@ -1,4 +1,4 @@
-﻿@model TicketPortalMVC.Application.ViewModels.RegisterViewModel
+﻿@model RegisterViewModel
 
 @{
 ViewData["Title"] = "Register";
@@ -12,7 +12,7 @@ ViewData["Title"] = "Register";
                     <div class="card-body p-5">
                         <h2 class="text-center font-weight-bold">Vytvořte svůj účet</h2>
                         <hr>
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
                         @* Form Fields *@
                         <div class="form-group">

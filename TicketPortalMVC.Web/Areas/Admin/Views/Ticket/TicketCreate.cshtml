@@ -14,31 +14,35 @@
 
                 <div class="card-body py-4 px-5">
                     <form asp-area="Admin" asp-controller="Ticket" asp-action="TicketCreate" method="post">
-
                         
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
                         <div class="mb-3">
-                            <label asp-for="EventId" class="form-label fw-bold">Událost</label>
-                            <select asp-for="EventId" class="form-control">
-                                <option value="">Vyberte událost</option>
-                                @foreach (var item in Model.Events)
-                                {
-                                    <option value="@item.EventId">@item.Name</option>
-                                }
-                            </select>
-                            <span asp-validation-for="@Model.EventId" class="text-danger"></span>
+                            <label for="eventSearch" class="form-label fw-bold">Událost</label>
+                            <input type="text" id="eventSearch" class="form-control" placeholder="Zadejte název události" autocomplete="off" />
+                            <!-- Seznam událostí, který bude dynamicky naplněn -->
+                            <ul id="eventList" class="list-group" style="display: none; max-height: 200px; overflow-y: auto;">
+                                <!-- Seznam bude naplněn dynamicky pomocí JavaScriptu -->
+                            </ul>
+
+                            <!-- Skrytý input pro ID události -->
+                            <input type="hidden" id="EventId" name="EventId" />
+
                         </div>
 
-                        <div class="mb-3">
-                            <label asp-for="@Model.Price" class="form-label fw-bold">Cena</label>
-                            <input asp-for="@Model.Price" class="form-control" type="number" step="0.01" required />
-                            <span asp-validation-for="@Model.Price" class="text-danger"></span>
+                        <div class="form-group mb-3">
+                            <label asp-for="Price" class="form-label fw-bold">Cena</label>
+                            <input type="number" asp-for="Price" class="form-control" />
                         </div>
 
+                        <div class="form-group mb-3">
+                            <label asp-for="Type" class="form-label fw-bold">Typ</label>
+                            <input asp-for="Type" class="form-control" />
+                        </div>
 
-                        <div class="mb-3">
-                            <label asp-for="@Model.Type" class="form-label fw-bold">Typ</label>
-                            <input asp-for="@Model.Type" class="form-control" step="0.01" required />
-                            <span asp-validation-for="@Model.Type" class="text-danger"></span>
+                        <div class="form-group mb-3">
+                            <label asp-for="CreatedAt" class="form-label fw-bold">Vytvořeno</label>
+                            <input asp-for="CreatedAt" class="form-control" type="datetime-local" />
                         </div>
 
 
@@ -52,3 +56,49 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const eventSearch = document.getElementById('eventSearch');
+        const eventList = document.getElementById('eventList');
+
+        // Funkce pro získání událostí podle vyhledávacího termínu
+        eventSearch.addEventListener('input', function () {
+            const searchTerm = eventSearch.value.trim();
+
+            if (searchTerm.length < 2) {
+                eventList.style.display = 'none';
+                return;
+            }
+
+            fetch(`/Admin/Ticket/SearchEvents?term=${searchTerm}`)
+                .then(response => response.json())
+                .then(data => {
+                    eventList.innerHTML = '';
+
+                    data.forEach(event => {
+                        const listItem = document.createElement('li');
+                        listItem.classList.add('list-group-item');
+                        listItem.textContent = event.name;
+                        listItem.addEventListener('click', function () {
+                            eventSearch.value = event.name;
+                            document.getElementById('EventId').value = event.eventId;
+                            eventList.style.display = 'none';
+                        });
+
+                        eventList.appendChild(listItem);
+                    });
+
+                    eventList.style.display = 'block';
+                });
+        });
+
+        // Skrytí seznamu událostí při kliknutí mimo něj
+        document.addEventListener('click', function (event) {
+            if (!eventList.contains(event.target) && event.target !== eventSearch) {
+                eventList.style.display = 'none';
+            }
+        });
+    });
+</script>

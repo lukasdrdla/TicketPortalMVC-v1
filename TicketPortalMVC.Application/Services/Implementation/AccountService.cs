@@ -20,12 +20,13 @@ public class AccountService : IAccountService
     
     public async Task RegisterAsync(RegisterViewModel registerViewModel)
     {
+        
         var existingUser = await _userManager.FindByEmailAsync(registerViewModel.Email);
         if (existingUser != null)
         {
-            throw new Exception("User already exists");
+            throw new InvalidOperationException("User with this email already exists.");
         }
-        
+
         var user = new User
         {
             Email = registerViewModel.Email,
@@ -38,69 +39,67 @@ public class AccountService : IAccountService
             PostalCode = registerViewModel.PostalCode,
             PhoneNumber = registerViewModel.PhoneNumber
         };
-        
+
         var result = await _userManager.CreateAsync(user, registerViewModel.Password);
         if (!result.Succeeded)
         {
-            throw new Exception("Failed to create user");
+            throw new InvalidOperationException("User creation failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
         }
+
+        var roleResult = await _userManager.AddToRoleAsync(user, "USER");
+        if (!roleResult.Succeeded)
+        {
+            throw new InvalidOperationException("Failed to assign 'USER' role.");
+        }
+        
+
     }
+
 
     public async Task LoginAsync(LoginViewModel loginViewModel)
     {
-        // Vyhledáme uživatele podle e-mailu
-        var user = await _userManager.FindByEmailAsync(loginViewModel.Email);
-        if (user == null)
+        try
         {
-            throw new Exception("User not found");
+            var user = await _userManager.FindByEmailAsync(loginViewModel.Email);
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+            var passwordValid = await _userManager.CheckPasswordAsync(user, loginViewModel.Password);
+            if (!passwordValid)
+            {
+                throw new Exception("Invalid password");
+            }
+            var result = await _signInManager.PasswordSignInAsync(user, loginViewModel.Password, false, false);
+            if (!result.Succeeded)
+            {
+                throw new Exception("Failed to sign in");
+            }
         }
-
-        // Zkontrolujeme správnost hesla
-        var passwordValid = await _userManager.CheckPasswordAsync(user, loginViewModel.Password);
-        if (!passwordValid)
+        catch (Exception ex)
         {
-            throw new Exception("Invalid password");
-        }
-
-        // Přihlášení uživatele
-        var result = await _signInManager.PasswordSignInAsync(user, loginViewModel.Password, false, false);
-        if (!result.Succeeded)
-        {
-            throw new Exception("Failed to sign in");
-        }
-    }
-
-    public async Task<User> GetUserByEmailAsync(string email)
-    {
-        var user = await _userManager.FindByEmailAsync(email);
-        if (user != null)
-        {
-            return user;
-        }
-        else
-        {
-            throw new Exception("User not found");
+            throw new Exception("An error occurred during login", ex);
         }
     }
-
+    
     public async Task<List<User>> GetUsersAsync()
     {
         var users = await _userManager.Users.ToListAsync();
         return users;
     }
 
-    public Task<User> GetUserByIdAsync(string id)
+    public async Task<User> GetUserByIdAsync(string id)
     {
-        var user = _userManager.FindByIdAsync(id);
-        if (user != null)
+        var user = await _userManager.FindByIdAsync(id);
+    
+        if (user == null)
         {
-            return user;
+            throw new KeyNotFoundException($"User with ID {id} not found.");
         }
-        else
-        {
-            throw new Exception("User not found");
-        }
+
+        return user;
     }
+
 
     public Task UpdateUserAsync(User user)
     {
@@ -108,13 +107,29 @@ public class AccountService : IAccountService
        
     }
 
-    public Task DeleteUserAsync(int id)
+    public async Task DeleteUserAsync(int id)
     {
-        throw new NotImplementedException();
+        var user = await _userManager.FindByIdAsync(id.ToString());
+        if (user == null)
+        {
+            throw new KeyNotFoundException($"User with ID {id} not found.");
+        }
+
+        var result = await _userManager.DeleteAsync(user);
+        if (!result.Succeeded)
+        {
+            throw new InvalidOperationException("An error occurred during user deletion.");
+        }
     }
+
 
     public async Task LogoutAsync()
     {
         await _signInManager.SignOutAsync();
+    }
+
+    public async Task<List<User>> SearchUsersAsync(string term)
+    {
+        return await _userManager.Users.Where(u => u.Email.Contains(term)).ToListAsync();
     }
 }

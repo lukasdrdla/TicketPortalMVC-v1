@@ -24,8 +24,8 @@ cartItemCount = await CartService.GetCartItemCount(userId);
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/datatables.css" />
     <link rel="stylesheet" href="~/TicketPortalMVC.Web.styles.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    
     
     
     
@@ -35,7 +35,11 @@ cartItemCount = await CartService.GetCartItemCount(userId);
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container-fluid">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                <span class="logo-text">🎫 TicketPortal <span class="logo-highlight">MVC</span></span>
+                <span class="logo-text">
+                    <div class="portal-title">
+                        ETicket Portal <i class="bi bi-ticket"></i>
+                    </div>
+                </span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -102,10 +106,9 @@ cartItemCount = await CartService.GetCartItemCount(userId);
     </main>
 </div>
 
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2024 - TicketPortalMVC.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-4 footer">
+    <p>&copy; 2024 Všechny práva vyhrazena | <a href="/kontakt" class="text-white">Kontaktujte nás</a></p>
 </footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

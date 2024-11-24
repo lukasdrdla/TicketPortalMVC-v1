@@ -7,8 +7,12 @@
 <div class="container mt-5">
     <h3 class="text-center mb-4 page-title">Uživatelé</h3>
     <div class="d-flex justify-content-end mb-4">
-        <a href="@Url.Action("Create", "Admin")" class="btn btn-primary">
+        <a href="@Url.Action("UserCreate", "User")" class="btn btn-primary">
             <i class="bi bi-plus-circle me-1"></i> Přidat uživatele
+        </a>
+        
+        <a href="@Url.Action("RoleCreate", "User")" class="btn btn-primary ms-2">
+        <i class="bi bi-plus-circle me-1"></i> Přidat roli
         </a>
     </div>
 
@@ -44,27 +48,18 @@
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td>@item.User.Id</td>
-                            <td>@item.User.UserName</td>
-                            <td>@item.User.Email</td>
-                            <td>
-                                @if (item.Roles.Any())
-                                {
-                                    <span class="badge bg-primary">@item.Roles.FirstOrDefault()</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">Bez role</span>
-                                }
-                            </td>
+                            <td>@item.Id</td>
+                            <td>@item.FirstName @item.LastName</td>
+                            <td>@item.Email</td>
+                            <td>@item.Role</td> 
                             <td class="text-end">
-                                <a href="@Url.Action("UserDetail", "User", new { id = item.User.Id })" class="btn btn-sm btn-primary me-1" title="Detail">
+                                <a href="@Url.Action("UserDetail", "User", new { id = item.Id })" class="btn btn-sm btn-primary me-1" title="Detail">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="@Url.Action("UserEdit", "User", new { id = item.User.Id })" class="btn btn-sm btn-warning me-1" title="Upravit">
+                                <a href="@Url.Action("UserEdit", "User", new { id = item.Id })" class="btn btn-sm btn-warning me-1" title="Upravit">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form asp-area="Admin" asp-action="UserDelete" asp-controller="User" asp-route-id="@item.User.Id" method="post" class="d-inline" onsubmit="return confirmDelete();" title="Smazat">
+                                <form asp-area="Admin" asp-action="UserDelete" asp-controller="User" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirmDelete();" title="Smazat">
                                     <button type="submit" class="btn btn-sm btn-danger">
                                         <i class="bi bi-trash"></i>
                                     </button>

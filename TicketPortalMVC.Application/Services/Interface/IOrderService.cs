@@ -1,5 +1,5 @@
 ﻿
-using TicketPortalMVC.Application.ViewModels.Order;
+using TicketPortalMVC.Application.ViewModels;
 using TicketPortalMVC.Domain.Entities;
 
 namespace TicketPortalMVC.Application.Services.Interface;

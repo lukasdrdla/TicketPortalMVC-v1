@@ -7,13 +7,15 @@ public interface IAccountService
 {
     Task RegisterAsync(RegisterViewModel registerViewModel);
     Task LoginAsync(LoginViewModel loginViewModel);
+    Task LogoutAsync();
+
     
-    Task<User> GetUserByEmailAsync(string email);
-    //all methods below are for admin
+    // Admin methods
     Task<List<User>> GetUsersAsync();
     Task<User> GetUserByIdAsync(string id);
     Task UpdateUserAsync(User user);
     Task DeleteUserAsync(int id);
     
-    Task LogoutAsync();
+    // Extra methods
+    Task<List<User>> SearchUsersAsync(string term);
 }

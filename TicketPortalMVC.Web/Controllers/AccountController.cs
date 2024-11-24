@@ -36,9 +36,18 @@ public class AccountController : Controller
         {
             return View(registerViewModel);
         }
+        
+        try
+        {
+            await _accountService.RegisterAsync(registerViewModel);
+            return RedirectToAction("RegistrationSuccess", "Account");
+        }
 
-        await _accountService.RegisterAsync(registerViewModel);
-        return RedirectToAction("Index", "Events");
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View(registerViewModel);
+        }
     }
     
     public IActionResult Login()
@@ -57,7 +66,7 @@ public class AccountController : Controller
         try
         {
             await _accountService.LoginAsync(loginViewModel);
-            return RedirectToAction("Index", "Events");
+            return RedirectToAction("Index", "Home");
         }
         catch (Exception ex)
         {
@@ -95,7 +104,19 @@ public class AccountController : Controller
         currentUser.PostalCode = user.PostalCode;
         currentUser.PhoneNumber = user.PhoneNumber;
         
-        await _userManager.UpdateAsync(currentUser);
+        var result = await _userManager.UpdateAsync(currentUser);
+        
+        if (!result.Succeeded)
+        {
+            ModelState.AddModelError(string.Empty, "Failed to update user");
+            return View(currentUser);
+        }
+        else
+        {
+            TempData["SuccessMessage"] = "Profile updated successfully";
+        }
+        
+        
         return View(currentUser);
     }
     
@@ -103,6 +124,11 @@ public class AccountController : Controller
     {
         await _accountService.LogoutAsync();
         return RedirectToAction("Index", "Events");
+    }
+    
+    public IActionResult RegistrationSuccess()
+    {
+        return View();
     }
 
 

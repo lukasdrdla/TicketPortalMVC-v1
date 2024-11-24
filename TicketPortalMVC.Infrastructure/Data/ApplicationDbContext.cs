@@ -19,5 +19,6 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<Event> Events { get; set; }
     public DbSet<Cart> Cart { get; set; }
     public DbSet<CartItem> CartItems { get; set; }
+    public DbSet<EventRating> EventRatings { get; set; }
     
 }

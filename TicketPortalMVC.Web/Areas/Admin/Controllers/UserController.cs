@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using TicketPortalMVC.Application.Services.Interface;
 using TicketPortalMVC.Application.ViewModels;
 using TicketPortalMVC.Domain.Entities;
@@ -31,7 +30,7 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
         public async Task<IActionResult> UserList()
         {
             // Načteme všechny uživatele
-            var users = await _userManager.Users.ToListAsync();
+            var users = await _accountService.GetUsersAsync();
             var userViewModels = new List<UserViewModel>();
 
             foreach (var user in users)
@@ -41,8 +40,17 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
 
                 userViewModels.Add(new UserViewModel
                 {
-                    User = user,
-                    Roles = roles.ToList()
+                    Id = user.Id,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Address = user.Address,
+                    City = user.City,
+                    Country = user.Country,
+                    PostalCode = user.PostalCode,
+                    PhoneNumber = user.PhoneNumber,
+                    Role = roles.FirstOrDefault()
+
                 });
             }
 
@@ -55,11 +63,19 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
         public async Task<IActionResult> UserDetail(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-
-            var model = new UserDetailViewModel
+            var roles = await _userManager.GetRolesAsync(user);
+            var model = new UserViewModel
             {
-                User = user,
-                Roles = await _userManager.GetRolesAsync(user)
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Address = user.Address,
+                City = user.City,
+                Country = user.Country,
+                PostalCode = user.PostalCode,
+                PhoneNumber = user.PhoneNumber,
+                Role = roles.FirstOrDefault()
             };
 
             return View(model);
@@ -67,48 +83,88 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
 
         public async Task<IActionResult> UserEdit(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            return View(user);
+            var user = _userManager.FindByIdAsync(id).Result;
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+
+
+            var roles = await _roleManager.Roles.Select(role => role.Name).ToListAsync();
+            var userRole = await _userManager.GetRolesAsync(user);
+
+            var model = new UserViewModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Address = user.Address,
+                City = user.City,
+                Country = user.Country,
+                PostalCode = user.PostalCode,
+                PhoneNumber = user.PhoneNumber,
+                Role = userRole.FirstOrDefault(),
+                AllRoles = roles
+            };
+            
+            return View(model);
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> UserEdit(User user)
+        public async Task<IActionResult> UserEdit(UserViewModel model)
         {
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
-                var existingUser = await _userManager.FindByIdAsync(user.Id.ToString());
-
-                if (existingUser != null)
+                var user = await _userManager.FindByIdAsync(model.Id);
+                if (user == null)
                 {
-                    existingUser.FirstName = user.FirstName;
-                    existingUser.LastName = user.LastName;
-                    existingUser.Email = user.Email;
-                    existingUser.City = user.City;
-                    existingUser.Country = user.Country;
-                    existingUser.Address = user.Address;
-                    existingUser.PostalCode = user.PostalCode;
-
-                    var result = await _userManager.UpdateAsync(existingUser);
-                    if (result.Succeeded)
-                    {
-                        return RedirectToAction("UserList");
-                    }
-                    else
-                    {
-                        foreach (var error in result.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error.Description);
-                        }
-                    }
+                    return NotFound();
                 }
-                else
+
+                user.Email = model.Email;
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                user.Address = model.Address;
+                user.City = model.City;
+                user.Country = model.Country;
+                user.PostalCode = model.PostalCode;
+                user.PhoneNumber = model.PhoneNumber;
+                
+
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
                 {
-                    ModelState.AddModelError(string.Empty, "Uživatel nebyl nalezen.");
+                    var currentRoles = await _userManager.GetRolesAsync(user);
+                    var rolesToAdd = model.Role == null ? new List<string>() : new List<string> { model.Role };
+                    var rolesToRemove = currentRoles.Except(rolesToAdd).ToList();
+
+                    foreach (var role in rolesToAdd)
+                    {
+                        await _userManager.AddToRoleAsync(user, role);
+                    }
+
+                    foreach (var role in rolesToRemove)
+                    {
+                        await _userManager.RemoveFromRoleAsync(user, role);
+                    }
+
+                    return RedirectToAction("UserList");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
-            return View(user);
+            var roles = _roleManager.Roles.Select(role => role.Name).ToList();
+            model.AllRoles = roles;
+            return View(model);
         }
+
 
 
         [HttpPost]
@@ -137,6 +193,156 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
 
             return View(user);
         }
+        
+        
+        public async Task<IActionResult> UserCreate()
+        {
+            var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+            var model = new UserCreateViewModel
+            {
+                Roles = roles
+            };
+            
+            
+            
+            return View(model);
+            
+        }
+        [HttpPost]
+        public async Task<IActionResult> UserCreate(UserCreateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new User
+                {
+
+                    Email = model.Email,
+                    UserName = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Address = model.Address,
+                    City = model.City,
+                    Country = model.Country,
+                    PostalCode = model.PostalCode,
+                    PhoneNumber = model.PhoneNumber
+                    
+
+                };
+
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, model.Role);
+                    return RedirectToAction("UserList");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+            }
+            
+            model.Roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+            return View(model);
+        }
+
+        
+        
+        public IActionResult RoleCreate()
+        {
+            var roles = _roleManager.Roles.Select(r => r.Name).ToList();
+            return View(roles);
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> RoleCreate(string roleName)
+        {
+            if (string.IsNullOrEmpty(roleName))
+            {
+                ModelState.AddModelError(string.Empty, "Název role je povinný.");
+                return View();
+            }
+
+            var role = new IdentityRole(roleName);
+            var result = await _roleManager.CreateAsync(role);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("RoleCreate");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View();
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> RoleDelete(string roleName)
+        {
+            var role = await _roleManager.FindByNameAsync(roleName);
+            if (role != null)
+            {
+                var result = await _roleManager.DeleteAsync(role);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("RoleCreate");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Role nebyla nalezena.");
+            }
+    
+            return View();
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> RoleEdit(string roleName, string newRole)
+        {
+            if (string.IsNullOrWhiteSpace(newRole))
+            {
+                ModelState.AddModelError("", "Název role není platný.");
+                return RedirectToAction("RoleCreate");
+            }
+
+            var roleToEdit = await _roleManager.FindByNameAsync(roleName);
+            if (roleToEdit == null)
+            {
+                ModelState.AddModelError("", "Role nebyla nalezena.");
+                return RedirectToAction("RoleCreate");
+            }
+
+            // Debug log
+            Console.WriteLine($"Role nalezena: {roleToEdit.Name}");
+
+            roleToEdit.Name = newRole; // Zde by mělo být nové jméno, pokud chcete změnit název
+            var result = await _roleManager.UpdateAsync(roleToEdit);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                return RedirectToAction("RoleCreate");
+            }
+
+            return RedirectToAction("RoleCreate");
+        }
+
+
+
 
 
     }

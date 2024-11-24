@@ -1,0 +1,83 @@
+@model List<string>
+@{
+Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<form asp-area="Admin" asp-action="RoleCreate" asp-controller="User" method="post">
+    <div class="form-group">
+        <label for="roleName">Název role</label>
+        <input type="text" class="form-control" id="roleName" name="roleName" placeholder="Zadejte název role" />
+    </div>
+    <button type="submit" class="btn btn-primary">Vytvořit roli</button>
+</form>
+
+<div class="container mt-5">
+    <h3 class="text-center mb-4 page-title">Role</h3>
+
+    @if (Model == null)
+    {
+    <div class="text-center">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Načítám role...</span>
+        </div>
+        <p class="mt-3">Načítám role...</p>
+    </div>
+    }
+
+    <table id="roles" class="table table-striped" style="width:100%">
+        <thead>
+        <tr>
+            <th>Název role</th>
+            <th>Akce</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                <div class="role-display" id="roleText-@item">
+                    @item
+                </div>
+                <div class="role-edit" id="roleInput-@item" style="display:none;">
+                    <form asp-action="RoleEdit" asp-controller="User" method="post" asp-area="Admin">
+                        <input type="hidden" name="roleName" value="@item" />
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="newRole" placeholder="Zadejte nový název role" />
+                        </div>
+                        <button type="submit" class="btn btn-primary edit-button">Upravit</button>
+                    </form>
+
+                </div>
+            </td>
+            <td>
+                <form asp-action="RoleDelete" asp-controller="User" method="post" style="display:inline;">
+                    <input type="hidden" name="roleName" value="@item" />
+                    <button type="submit" class="btn btn-danger">Smazat</button>
+                </form>
+                <button type="button" class="btn btn-warning btn-sm edit-button" data-role="@item">Upravit</button>
+
+            </td>
+        </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const editButtons = document.querySelectorAll('.edit-button');
+
+        editButtons.forEach((button) => {
+            button.addEventListener('click', function () {
+                const roleName = button.getAttribute('data-role');
+                const roleText = document.getElementById('roleText-' + roleName);
+                const roleInput = document.getElementById('roleInput-' + roleName);
+
+                // Skrytí textu a zobrazení inputu pro editaci
+                roleText.style.display = 'none';
+                roleInput.style.display = 'block';
+            });
+        });
+    });
+</script>

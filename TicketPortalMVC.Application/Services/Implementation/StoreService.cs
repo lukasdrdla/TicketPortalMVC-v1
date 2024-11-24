@@ -31,18 +31,28 @@ public class StoreService : IStoreService
 
     }
 
-    public Task CreateStoreAsync(Store store)
+    public async Task CreateStoreAsync(Store store)
     {
-        throw new NotImplementedException();
+        await _context.Stores.AddAsync(store);
+        await _context.SaveChangesAsync();
     }
 
     public Task UpdateStoreAsync(Store store)
     {
-        throw new NotImplementedException();
+        _context.Stores.Update(store);
+        return _context.SaveChangesAsync();
+        
     }
 
-    public Task DeleteStoreAsync(int id)
+    public async Task DeleteStoreAsync(int id)
     {
-        throw new NotImplementedException();
+        var storeToDelete = await _context.Stores.FindAsync(id);
+        
+        if (storeToDelete == null)
+            throw new Exception("Store not found");
+        
+        _context.Stores.Remove(storeToDelete);
+        await _context.SaveChangesAsync();
+        
     }
 }

@@ -1,71 +1,97 @@
 ﻿@model EventFilterViewModel
 
-<div class="card shadow-sm mb-4">
-    <div class="card-body">
-        <h4 class="card-title mb-4">Filtr událostí</h4>
-        <form asp-action="Index" method="get" class="row g-3 align-items-end">
-            <div class="col-md-3">
-                <label for="searchTerms" class="form-label">Název události</label>
-                <div class="input-group">
-                    <span class="input-group-text">
-                        <i class="bi bi-search"></i>
-                    </span>
-                    <input type="text" class="form-control" id="searchTerms"
-                           name="searchTerms" placeholder="Vyhledat..."
-                           value="@Model.SearchTerms" />
-                </div>
-            </div>
+@{
+ViewData["Title"] = "Události";
+}
 
-            <div class="col-md-3">
-                <label for="startDate" class="form-label">Datum od</label>
-                <input type="date" class="form-control" id="startDate"
-                       name="startDate" value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
-            </div>
+<div class="row">
+    <!-- Sidebar Filter -->
+    <div class="col-lg-3">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <h5 class="card-title text-dark mb-4"><i class="bi bi-funnel-fill"></i> Filtr</h5>
+                <form asp-action="Index" method="get" class="d-flex flex-column gap-4">
+                    <!-- Event Name -->
+                    <div>
+                        <label for="searchTerms" class="form-label text-muted">Název události</label>
+                        <input type="text" class="form-control" id="searchTerms" name="searchTerms" placeholder="Např. koncert, festival..." value="@Model.SearchTerms" />
+                    </div>
 
-            <div class="col-md-3">
-                <label for="endDate" class="form-label">Datum do</label>
-                <input type="date" class="form-control" id="endDate"
-                       name="endDate" value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
-            </div>
+                    <!-- Date Range -->
+                    <div>
+                        <label class="form-label text-muted">Datum</label>
+                        <div class="row g-2">
+                            <div class="col">
+                                <input type="date" class="form-control" id="startDate" name="startDate" value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
+                            </div>
+                            <div class="col">
+                                <input type="date" class="form-control" id="endDate" name="endDate" value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="col-md-3">
-                <label for="location" class="form-label">Místo konání</label>
-                <div class="input-group">
-                    <span class="input-group-text">
-                        <i class="bi bi-geo-alt"></i>
-                    </span>
-                    <input type="text" class="form-control" id="location"
-                           name="location" placeholder="Město nebo místo"
-                           value="@Model.Location" />
-                </div>
-            </div>
+                    <!-- Location -->
+                    <div>
+                        <label for="location" class="form-label text-muted">Místo konání</label>
+                        <input type="text" class="form-control" id="location" name="location" placeholder="Např. Praha, Brno..." value="@Model.Location" />
+                    </div>
 
-            <div class="col-md-3">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="bi bi-funnel-fill"></i> Filtrovat
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
+                    <!-- Price Range -->
+                    <div>
+                        <label class="form-label text-muted">Cenové rozpětí</label>
+                        <div class="d-flex gap-2">
+                            <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="Od" min="0" />
+                            <input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="Do" min="0" />
+                        </div>
+                    </div>
 
-<div class="container my-5">
-    <div class="row">
-        @foreach (var item in Model.Events)
-        {
-        <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card card-event shadow-lg border-0 h-100">
-                <a href="@Url.Action("EventDetail", "Events", new { id = item.EventId })">
-                    <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover;">
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title">@item.Name</h5>
-                    <p class="text-muted">@item.Location</p>
-                    <p class="text-muted">@item.Date.ToString("dd.MM.yyyy HH:mm")</p>
-                    <p class="card-text">@item.Description</p>
-                </div>
+                    <!-- Buttons -->
+                    <div class="d-flex flex-column gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-funnel-fill"></i> Filtrovat
+                        </button>
+                        <a href="@Url.Action("Index", "Events")" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-clockwise"></i> Resetovat
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
-        }
+    </div>
+
+    <!-- Event Cards -->
+    <div class="col-lg-9">
+        <div class="text-center mb-5">
+            <h1 class="fw-bold display-5">@ViewData["Title"]</h1>
+            <p class="text-muted">Najděte svou oblíbenou událost a zakupte si vstupenky!</p>
+        </div>
+        <div id="eventResults" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var item in Model.Events)
+            {
+            <div class="col">
+                <div class="card shadow-lg border-0 h-100 transform-hover" style="transition: transform 0.3s, box-shadow 0.3s;">
+                    <a href="@Url.Action("EventDetail", "Events", new { id = item.EventId })">
+                        <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover; border-radius: 0.5rem 0.5rem 0 0;">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">@item.Name</h5>
+                        <p class="text-muted">@item.Location</p>
+                        <p class="text-muted">@item.Date.ToString("dd.MM.yyyy HH:mm")</p>
+                        <p class="card-text text-truncate" title="@item.Description">@item.Description</p>
+                    </div>
+                    <div class="card-footer text-end">
+                        <a href="@Url.Action("EventDetail", "Events", new { id = item.EventId })" class="btn btn-link text-decoration-none text-primary">
+                            <i class="bi bi-info-circle"></i> Více informací
+                        </a>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
     </div>
 </div>
+
+
+
+
+

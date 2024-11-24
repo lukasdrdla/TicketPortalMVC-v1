@@ -1,89 +1,118 @@
-﻿@model UserDetailViewModel
+﻿@model UserViewModel
 @{
-    Layout = "~/Views/Shared/AdminLayout.cshtml";
+Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center">
-                    <h2 class="card-title mb-0">Uživatel: @Model.User.UserName</h2>
-                    <p class="card-subtitle mt-1 text-light">@Model.User.Email</p>
+        <div class="col-lg-8">
+            <!-- User Profile Section -->
+            <div class="user-profile bg-light p-4 rounded-lg shadow-lg">
+
+                <!-- Header -->
+                <div class="text-center mb-5">
+                    <h1 class="display-4 text-dark">@Model.FirstName @Model.LastName</h1>
+                    <p class="lead text-muted">@Model.Email</p>
+                    <div class="user-id d-flex justify-content-center mt-3">
+                        <span class="badge bg-info text-dark fs-6">ID: @Model.Id</span>
+                    </div>
                 </div>
 
-                <div class="card-body py-4 px-5">
-                    <div class="row mb-3">
-                        <div class="col-12 d-flex align-items-center">
-                            <i class="bi bi-person-fill me-2 text-primary"></i>
-                            <h5 class="mb-0">Osobní Informace</h5>
-                        </div>
-                    </div>
-
+                <!-- Personal Information Section -->
+                <div class="personal-info mb-4">
+                    <h4 class="text-primary mb-3">Osobní Informace</h4>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Jméno</label>
-                            <p class="border p-2 rounded">@Model.User.FirstName</p>
+                            <label class="fw-bold">Jméno</label>
+                            <div class="info-box">@Model.FirstName</div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Přijmení</label>
-                            <p class="border p-2 rounded">@Model.User.LastName</p>
+                            <label class="fw-bold">Přijmení</label>
+                            <div class="info-box">@Model.LastName</div>
                         </div>
                     </div>
-
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Město</label>
-                            <p class="border p-2 rounded">@Model.User.City</p>
+                            <label class="fw-bold">Město</label>
+                            <div class="info-box">@Model.City</div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Země</label>
-                            <p class="border p-2 rounded">@Model.User.Country</p>
+                            <label class="fw-bold">Země</label>
+                            <div class="info-box">@Model.Country</div>
                         </div>
                     </div>
-
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Adresa</label>
-                            <p class="border p-2 rounded">@Model.User.Address</p>
+                            <label class="fw-bold">Adresa</label>
+                            <div class="info-box">@Model.Address</div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">PSČ</label>
-                            <p class="border p-2 rounded">@Model.User.PostalCode</p>
+                            <label class="fw-bold">PSČ</label>
+                            <div class="info-box">@Model.PostalCode</div>
                         </div>
                     </div>
-
-
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Role</label>
-                            <p class="border p-2 rounded">
-                                @foreach (var role in Model.Roles)
-                                {
-                                    <span class="badge bg-primary me-1">@role</span>
-                                }
-                            </p>
+                            <label class="fw-bold">Role</label>
+                            <div class="info-box">@Model.Role</div>
                         </div>
                     </div>
-
-
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="alert alert-info d-flex align-items-center">
-                                <i class="bi bi-info-circle-fill me-2"></i>
-                                ID uživatele: <strong class="ms-2">@Model.User.Id</strong>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
 
-                <div class="card-footer text-center py-3">
-                    <a href="@Url.Action("Edit", "User", new { id = Model.User.Id })" class="btn btn-outline-primary btn-sm">
+                <!-- Edit Button Section -->
+                <div class="d-flex justify-content-center mt-4">
+                    <a href="@Url.Action("UserEdit", "User", new { id = Model.Id })" class="btn btn-primary px-4 py-2">
                         <i class="bi bi-pencil-square"></i> Upravit uživatele
                     </a>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .user-profile {
+        background-color: #f8f9fa;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .info-box {
+        background-color: #ffffff;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        color: #333;
+    }
+
+    h4 {
+        font-size: 1.5rem;
+        color: #007bff;
+    }
+
+    .badge {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        color: white;
+        font-size: 1.1rem;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+</style>

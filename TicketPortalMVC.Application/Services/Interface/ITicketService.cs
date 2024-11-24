@@ -1,5 +1,4 @@
-﻿using TicketPortalMVC.Application.ViewModels.Ticket;
-using TicketPortalMVC.Domain.Entities;
+﻿using TicketPortalMVC.Domain.Entities;
 
 namespace TicketPortalMVC.Application.Services.Interface;
 
@@ -12,4 +11,6 @@ public interface ITicketService
     Task DeleteTicketAsync(int id);
 
     Task<int> GetTotalTicketsAsync();
+    
+    Task<List<Ticket>> SearchTicketsAsync(string term);
 }
