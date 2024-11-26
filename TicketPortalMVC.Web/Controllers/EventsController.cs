@@ -52,7 +52,16 @@ public class EventsController : Controller
         var @event = await _eventService.GetEventByIdAsync(id);
         ViewData["EventId"] = id;
         
-        return View(@event);
+        var model = new EventDetailViewModel
+        {
+            Event = @event,
+            Tickets = @event.Tickets,
+            EventRatings = @event.EventRatings
+            
+            
+        };
+        
+        return View(model);
     }
     
     [HttpPost]

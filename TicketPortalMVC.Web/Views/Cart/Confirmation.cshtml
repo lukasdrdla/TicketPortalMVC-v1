@@ -1,44 +1,58 @@
 @model Order
 
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Potvrzení objednávky</h2>
+    <h2 class="text-center mb-5">Potvrzení objednávky</h2>
 
-    <div class="card mb-4 shadow-sm">
+    <!-- Card pro objednávku -->
+    <div class="card mb-4 shadow-lg">
         <div class="card-body">
-            <p class="fs-5"><strong>Objednávka ID:</strong> @Model.OrderId</p>
-            <p class="fs-5"><strong>Datum objednávky:</strong> @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</p>
+            <p class="fs-4 mb-2"><strong>Objednávka ID:</strong> @Model.OrderId</p>
+            <p class="fs-5 mb-2"><strong>Datum objednávky:</strong> @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</p>
             <p class="fs-5">
                 <strong>Celková částka:</strong>
-                <span class="text-success">@String.Format("{0:C}", Model.Total)</span>
+                <span class="text-success fs-3">@String.Format("{0:C}", Model.Total)</span>
             </p>
         </div>
     </div>
 
-    <h3 class="mb-3">Položky objednávky:</h3>
+    <!-- Nadpis pro položky objednávky -->
+    <h3 class="mb-4">Položky objednávky</h3>
 
-    <table class="table table-striped table-hover align-middle">
-        <thead class="table-dark">
-        <tr>
-            <th scope="col">Název vstupenky</th>
-            <th scope="col">Událost</th>
-            <th scope="col">Množství</th>
-            <th scope="col">Cena</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model.OrderTickets)
-        {
-        <tr>
-            <td>@item.Ticket.TicketId</td> <!-- Název vstupenky místo ID? -->
-            <td>@item.Ticket.EventId</td>
-            <td>@item.Quantity</td>
-            <td>@String.Format("{0:C}", item.Ticket.Price)</td>
-        </tr>
-        }
-        </tbody>
-    </table>
+    <!-- Tabulka s položkami objednávky -->
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Název vstupenky</th>
+                <th scope="col">Událost</th>
+                <th scope="col">Množství</th>
+                <th scope="col">Cena</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.OrderTickets)
+            {
+            <tr>
+                <td>@item.Ticket.Event.Name</td> <!-- Zobrazení názvu události -->
+                <td>@item.Ticket.Event.Name</td> <!-- Ukázka názvu události -->
+                <td>@item.Quantity</td>
+                <td>@String.Format("{0:C}", item.Ticket.Price)</td>
+            </tr>
+            }
+            </tbody>
+        </table>
+    </div>
 
+    <!-- Závěrečná zpráva -->
     <div class="alert alert-success mt-4 text-center" role="alert">
         <h4 class="alert-heading">Děkujeme za vaši objednávku!</h4>
+        <p>Vaše objednávka byla úspěšně přijata. Očekávejte další informace na váš email.</p>
+    </div>
+
+    <!-- Možnost návratu na domovskou stránku -->
+    <div class="d-flex justify-content-center mt-4">
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary btn-lg">
+            Návrat na domovskou stránku
+        </a>
     </div>
 </div>

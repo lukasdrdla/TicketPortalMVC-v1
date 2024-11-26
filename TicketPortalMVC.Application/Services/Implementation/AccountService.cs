@@ -12,7 +12,8 @@ public class AccountService : IAccountService
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-    
+    private IAccountService _accountServiceImplementation;
+
     public AccountService(UserManager<User> userManager, SignInManager<User> signInManager)
     {
         _userManager = userManager;
@@ -133,5 +134,11 @@ public class AccountService : IAccountService
     public async Task<List<User>> SearchUsersAsync(string term)
     {
         return await _userManager.Users.Where(u => u.Email.Contains(term)).ToListAsync();
+    }
+
+    public async Task<int> GetUsersCountAsync()
+    {
+        var count = await _userManager.Users.CountAsync();
+        return count;
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicketPortalMVC.Application.Services.Interface;
 using TicketPortalMVC.Application.ViewModels;
@@ -5,6 +6,8 @@ using TicketPortalMVC.Domain.Entities;
 
 namespace TicketPortalMVC.Web.Areas.Admin.Controllers;
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
+
 
 public class StoreController : Controller
 {

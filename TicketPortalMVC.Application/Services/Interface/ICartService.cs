@@ -11,5 +11,9 @@ public interface ICartService
     Task RemoveFromCart(int ticketId);
 
     Task<int> GetCartItemCount(string userId);
+    
+    Task<CartItem> GetCartItemById(int cartItemId);
+    //update
+    Task UpdateCartItem(CartItem cartItem);
 
 }

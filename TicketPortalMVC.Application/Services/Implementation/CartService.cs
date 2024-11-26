@@ -9,7 +9,8 @@ namespace TicketPortalMVC.Application.Services.Implementation;
 public class CartService : ICartService
 {
     private readonly ApplicationDbContext _context;
-    
+    private ICartService _cartServiceImplementation;
+
     public CartService(ApplicationDbContext context)
     {
         _context = context;
@@ -94,5 +95,17 @@ public class CartService : ICartService
 
         // Spočítáme celkový počet položek v košíku
         return cart.CartItems.Sum(ci => ci.Quantity);
+    }
+
+    public async Task<CartItem> GetCartItemById(int cartItemId)
+    {
+        var item = await _context.CartItems.FindAsync(cartItemId);
+        return item;
+    }
+
+    public async Task UpdateCartItem(CartItem cartItem)
+    {
+        _context.CartItems.Update(cartItem);
+        await _context.SaveChangesAsync();
     }
 }

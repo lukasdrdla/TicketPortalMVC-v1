@@ -19,4 +19,5 @@ public interface IAccountService
     
     // Extra methods
     Task<List<User>> SearchUsersAsync(string term);
+    Task<int> GetUsersCountAsync();
 }

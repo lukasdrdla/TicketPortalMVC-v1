@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Elfie.Serialization;
 using TicketPortalMVC.Application.Services.Interface;
@@ -8,6 +9,8 @@ using TicketPortalMVC.Domain.Entities;
 namespace TicketPortalMVC.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
+
     public class EventController : Controller
     {
 

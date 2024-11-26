@@ -75,9 +75,13 @@ cartItemCount = await CartService.GetCartItemCount(userId);
                             <form asp-controller="Account" asp-action="Logout" method="post">
                                 <button type="submit" class="dropdown-item">Odhlásit</button>
                             </form>
-                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="DashBoard" asp-action="Index">DashBoard</a></li>
-
+                            
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="DashBoard" asp-action="Index">DashBoard</a></li>
+                            }
                         </ul>
+
                     </li>
                     }
                     else

@@ -108,10 +108,38 @@ public class CartController : Controller
         return View(order);
     }
     
+
+
     [HttpPost]
-    public async Task<IActionResult> RemoveFromCart(int cartItemId)
+    public IActionResult UpdateQuantity(int cartItemId, int quantity)
     {
-        await _cartService.RemoveFromCart(cartItemId);
-        return RedirectToAction("Index", "Cart");
+        // Získání položky z košíku
+        var cartItem = _cartService.GetCartItemById(cartItemId);
+        if (cartItem == null)
+        {
+            TempData["Error"] = "Položka nenalezena.";
+            return RedirectToAction("Index"); // Nebo jiná stránka
+        }
+
+        // Aktualizace množství
+        cartItem.Result.Quantity = quantity;
+        _cartService.UpdateCartItem(cartItem.Result);
+
+        return RedirectToAction("Index"); // Nebo přesměrování na košík
     }
+
+
+    [HttpPost]
+    public IActionResult RemoveFromCart(int cartItemId)
+    {
+        // Odebrání položky z košíku
+        _cartService.RemoveFromCart(cartItemId);
+
+        return RedirectToAction("Index"); // Nebo jiná stránka
+    }
+
+
+
+    
+    
 }
