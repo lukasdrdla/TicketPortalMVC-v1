@@ -1,44 +1,65 @@
-﻿@model OrderViewModel
+﻿@model OrderDetailViewModel
 
 @{
-    Layout = "~/Views/Shared/AdminLayout.cshtml";
+Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-<div class="container my-5">
-    <h2 class="mb-4">Order Details</h2>
+<div class="container mt-4">
+    <h2 class="mb-4">Detail objednávky</h2>
 
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <p><strong>Order ID:</strong> @Model.OrderId</p>
-            <p><strong>Order Date:</strong> @Model.CreatedAt.ToString("dd MMM yyyy HH:mm")</p>
-            <p><strong>Total Price:</strong> @Model.TotalPrice.ToString("C")</p>
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            Objednávka #@Model.OrderId
         </div>
-
+        <div class="card-body">
+            <p><strong>Datum vytvoření:</strong> @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</p>
+            <p><strong>Celková cena:</strong> @Model.Total.ToString("C")</p>
+            <p>
+                <strong>Status platby:</strong>
+                @if (Model.IsPaid)
+                {
+                <span class="badge bg-success">Zaplaceno</span>
+                }
+                else
+                {
+                <span class="badge bg-danger">Nezaplaceno</span>
+                }
+            </p>
+        </div>
     </div>
 
-    <h3 class="mt-4 mb-3">Tickets</h3>
-    <table class="table table-striped table-bordered">
-        <thead class="table-light">
+    <h4 class="mb-3">Položky objednávky</h4>
+    <table class="table table-striped">
+        <thead>
         <tr>
-            <th>Ticket Name</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Total</th>
+            <th>#</th>
+            <th>Název akce</th>
+            <th>Množství</th>
+            <th>Cena za kus</th>
+            <th>Celková cena</th>
         </tr>
         </thead>
         <tbody>
-        @foreach (var orderTicket in Model.OrderTickets)
+        @foreach (var ticket in Model.Tickets)
         {
-            <tr>
-                <td>@orderTicket.TicketId</td>
-                <td>@orderTicket.Ticket.Price.ToString("C")</td>
-                <td>@orderTicket.Quantity</td>
-            </tr>
+        <tr>
+            <td>@ticket.TicketId</td>
+            <td>@ticket.EventName</td>
+            <td>@ticket.Quantity</td>
+            <td>@ticket.Price.ToString("C")</td>
+            <td>@(ticket.Quantity * ticket.Price) Kč</td>
+        </tr>
         }
         </tbody>
     </table>
 
-    <div class="text-end">
-        <a href="@Url.Action("Index", "Order", new { area = "Admin" })" class="btn btn-primary">Back to Orders</a>
+    <div class="mt-4">
+        <a asp-action="OrderList" class="btn btn-secondary">Zpět na seznam objednávek</a>
+        @if (!Model.IsPaid)
+        {
+            <form asp-action="MarkAsPaid" asp-controller="Order" asp-route-id="@Model.OrderId" method="post" class="d-inline">
+                <button type="submit" class="btn btn-success">Označit jako zaplaceno</button>
+            </form>
+        }
     </div>
 </div>

@@ -4,14 +4,19 @@ namespace TicketPortalMVC.Application.ViewModels
 {
     public class OrderViewModel
     {
-        public int OrderId { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public decimal TotalPrice { get; set; }
-        public string UserId { get; set; } // User Id
-        public string OrderTicketsJson { get; set; } // Serializovaná data pro vstupenky
+        public string UserId { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public decimal Total => Tickets.Sum(x => x.Price * x.Quantity);
+        public bool IsPaid { get; set; }
+        
+        public List<OrderTicketViewModel> Tickets { get; set; } = new List<OrderTicketViewModel>();
+        
+        public List<OrderTicketViewModel> AvailableTickets { get; set; } = new List<OrderTicketViewModel>();
+        
 
-
-        public List<OrderTicket> OrderTickets { get; set; }
+ 
+        
+        
     }
     
 

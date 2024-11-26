@@ -4,244 +4,120 @@
 Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center">
-                    <h2 class="card-title mb-0">Přidat novou objednávku</h2>
+<div class="container mt-4">
+    <h2 class="mb-4">Vytvořit objednávku</h2>
+
+    <form asp-action="OrderCreate" asp-controller="Order" asp-area="Admin">
+        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Count > 0)
+        {
+        <div class="alert alert-danger" role="alert">
+            Opravte chyby ve formuláři níže.
+        </div>
+        }
+        <!-- Sekce uživatele -->
+        <div class="form-group mb-3">
+            <label asp-for="UserId" class="form-label">ID Uživatele</label>
+            <input asp-for="UserId" class="form-control" placeholder="Zadejte ID uživatele" />
+            <span asp-validation-for="UserId" class="text-danger"></span>
+        </div>
+
+        <!-- Sekce status platby -->
+        <div class="form-group mb-3">
+            <label asp-for="IsPaid" class="form-label">Status platby</label>
+            <select asp-for="IsPaid" class="form-select">
+                <option value="true">Zaplaceno</option>
+                <option value="false">Nezaplaceno</option>
+            </select>
+        </div>
+
+        <!-- Sekce lístků -->
+        <div id="tickets-section">
+            <h4 class="mb-3">Lístky</h4>
+
+            <div class="ticket-row form-group border p-3 mb-3">
+                <label for="ticket-select" class="form-label">Vyberte lístek</label>
+                <select class="form-select ticket-select" onchange="updateTicketInfo(this)" name="Tickets[0].TicketId">
+                    <option value="">-- Vyberte --</option>
+                    @foreach (var ticket in Model.AvailableTickets)
+                    {
+                    <option value="@ticket.TicketId" data-price="@ticket.Price">
+                        @ticket.EventName - @ticket.Price Kč
+                    </option>
+                    }
+                </select>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Množství</label>
+                        <input name="Tickets[0].Quantity" class="form-control" type="number" min="1" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Cena</label>
+                        <input name="Tickets[0].Price" class="form-control ticket-price" readonly />
+                    </div>
                 </div>
-
-                <div class="card-body py-4 px-5">
-                    <form asp-area="Admin" asp-controller="Order" asp-action="OrderCreate" method="post">
-
-                        <div class="mb-3">
-                            <label for="userSearch" class="form-label fw-bold">Uživatel</label>
-                            <input type="text" id="userSearch" class="form-control" placeholder="Zadejte jméno uživatele" autocomplete="off">
-
-                            <!-- Seznam uživatelů, který bude dynamicky naplněn -->
-                            <ul id="userList" class="list-group" style="display: none; max-height: 200px; overflow-y: auto;">
-                                <!-- Seznam bude naplněn dynamicky pomocí JavaScriptu -->
-                            </ul>
-
-                            <!-- Skrytý input pro ID uživatele -->
-                            <input type="hidden" id="UserId" name="UserId" value="@Model.UserId" />
-                        </div>
-
-                        <div id="selectedTickets" class="mb-3">
-                            <!-- Zde budou přidávány vybrané vstupenky -->
-                        </div>
-                        <div class="mb-3">
-                            <label for="ticketSearch" class="form-label fw-bold">Vstupenka</label>
-                            <input type="text" id="ticketSearch" class="form-control" placeholder="Zadejte název vstupenky" autocomplete="off">
-                            
-                            <!-- Seznam vstupenek, který bude dynamicky naplněn -->
-                            <ul id="ticketList" class="list-group" style="display: none; max-height: 200px; overflow-y: auto;">
-                                <!-- Seznam bude naplněn dynamicky pomocí JavaScriptu -->
-                            </ul>
-                            <input type="hidden" id="OrderTickets" name="OrderTickets" value="@Model.OrderTickets" />
-                            
-
-
-                        </div>
-
-
-                        <div class="form-group">
-                            <label for="TotalPrice">Celková cena</label>
-                            <input asp-for="TotalPrice" class="form-control" type="number" step="0.01" readonly />
-                            <span asp-validation-for="TotalPrice" class="text-danger"></span>
-                        </div>
-                        
-                        
-
-
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-primary">Uložit novou událost</button>
-                            <a asp-area="Admin" asp-controller="Order" asp-action="OrderList" class="btn btn-secondary">Zpět</a>
-                        </div>
-                    </form>
-                </div>
+                <button type="button" class="btn btn-danger mt-3 remove-ticket">Odebrat</button>
             </div>
         </div>
-    </div>
+
+        <!-- Přidání dalšího lístku -->
+        <button type="button" id="add-ticket" class="btn btn-secondary mb-3">Přidat další lístek</button>
+
+        <!-- Odeslat formulář -->
+        <div class="form-group mt-3">
+            <button type="submit" class="btn btn-primary">Vytvořit objednávku</button>
+        </div>
+    </form>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const userSearch = document.getElementById('userSearch');
-        const userList = document.getElementById('userList');
+    // Funkce pro dynamickou aktualizaci ceny na základě výběru
+    function updateTicketInfo(select) {
+        const selectedOption = select.options[select.selectedIndex];
+        const priceInput = select.closest('.ticket-row').querySelector('.ticket-price');
+        priceInput.value = selectedOption.dataset.price || '';
+    }
 
-        // Funkce pro získání uživatelů podle vyhledávacího termínu
-        userSearch.addEventListener('input', function () {
-            const searchTerm = userSearch.value.trim();
-
-            if (searchTerm.length < 1) {
-                // Skrýt seznam, pokud je vyhledávací termín příliš krátký
-                userList.style.display = 'none';
-                return;
-            }
-
-            // Odeslání AJAX požadavku na server pro vyhledání uživatelů
-            fetch(`/Admin/Order/SearchUsers?term=${searchTerm}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Vyčistíme seznam před novými výsledky
-                    userList.innerHTML = '';
-
-                    if (data.length > 0) {
-                        // Přidáme nové výsledky do seznamu
-                        data.forEach(user => {
-                            const listItem = document.createElement('li');
-                            listItem.classList.add('list-group-item');
-                            listItem.classList.add('list-group-item-action');
-                            listItem.textContent = user.text;
-                            listItem.dataset.userId = user.id;
-
-                            // Přidáme kliknutelnou funkci
-                            listItem.addEventListener('click', function () {
-                                // Nastavíme vybraného uživatele do pole pro uživatele
-                                document.getElementById('UserId').value = user.id;
-                                userSearch.value = user.text;  // Nastaví text uživatele do vyhledávacího pole
-                                userList.style.display = 'none';  // Skryje seznam po výběru uživatele
-                                console.log(user.id);
-                            });
-
-                            userList.appendChild(listItem);
-                        });
-
-                        // Zobrazíme seznam uživatelů
-                        userList.style.display = 'block';
-                    } else {
-                        // Pokud nejsou žádní uživatelé, skrytí seznamu
-                        userList.style.display = 'none';
-                    }
-                })
-                .catch(error => {
-                    console.error('Chyba při získávání uživatelů:', error);
-                });
-        });
-
-        // Skrýt seznam uživatelů, když uživatel klikne mimo seznam
-        document.addEventListener('click', function (event) {
-            if (!userList.contains(event.target) && event.target !== userSearch) {
-                userList.style.display = 'none';
-            }
-        });
-    });
-
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const ticketSearch = document.getElementById('ticketSearch');
-        const ticketList = document.getElementById('ticketList');
-        const selectedTickets = document.getElementById('selectedTickets');
-        const totalPriceElement = document.querySelector('input[name="TotalPrice"]');
-        const orderTicketsInput = document.getElementById('OrderTickets');
-
-        let selectedTicketsData = []; // Array to store selected tickets data
-
-        function updateTotalPrice() {
-            let total = 0;
-            selectedTicketsData.forEach(ticket => {
-                total += ticket.quantity * ticket.price;
-            });
-            totalPriceElement.value = total.toFixed(2); // Update the total price
+    // Přidání dalšího lístku
+    document.getElementById('add-ticket').addEventListener('click', function () {
+        const section = document.getElementById('tickets-section');
+        const index = section.querySelectorAll('.ticket-row').length;
+        const newTicket = `
+        <div class="ticket-row form-group border p-3 mb-3">
+            <label for="ticket-select" class="form-label">Vyberte lístek</label>
+            <select class="form-select ticket-select" onchange="updateTicketInfo(this)" name="Tickets[${index}].TicketId">
+                <option value="">-- Vyberte --</option>
+                @foreach (var ticket in Model.AvailableTickets)
+        {
+        <option value="@ticket.TicketId" data-price="@ticket.Price">
+                        @ticket.EventName - @ticket.Price Kč
+                    </option>
         }
+            </select>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <label class="form-label">Množství</label>
+                    <input name="Tickets[${index}].Quantity" class="form-control" type="number" min="1" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Cena</label>
+                    <input name="Tickets[${index}].Price" class="form-control ticket-price" readonly />
+                </div>
+            </div>
+            <button type="button" class="btn btn-danger mt-3 remove-ticket">Odebrat</button>
+        </div>`;
+        section.insertAdjacentHTML('beforeend', newTicket);
 
-        ticketSearch.addEventListener('input', function () {
-            const searchTerm = ticketSearch.value.trim();
-
-            if (searchTerm.length < 1) {
-                ticketList.style.display = 'none';
-                return;
-            }
-
-            fetch(`/Admin/Order/SearchTickets?term=${searchTerm}`)
-                .then(response => response.json())
-                .then(data => {
-                    ticketList.innerHTML = '';
-                    if (data.length > 0) {
-                        data.forEach(ticket => {
-                            const listItem = document.createElement('li');
-                            listItem.classList.add('list-group-item', 'list-group-item-action');
-                            listItem.textContent = ticket.text + ' - ' + ticket.price + ' Kč' + ' - ' + ticket.type;
-                            listItem.dataset.ticketId = ticket.id;
-
-                            listItem.addEventListener('click', function () {
-                                const ticketId = ticket.id;
-                                const ticketName = ticket.text;
-                                const ticketPrice = parseFloat(ticket.price);
-
-                                // Add the selected ticket to the array
-                                const quantityInput = document.createElement('input');
-                                quantityInput.type = 'number';
-                                quantityInput.classList.add('form-control');
-                                quantityInput.value = 1;
-                                quantityInput.min = 1;
-                                quantityInput.max = 10;
-
-                                quantityInput.addEventListener('input', function() {
-                                    const quantity = parseInt(quantityInput.value);
-                                    // Find the selected ticket and update the quantity
-                                    const selectedTicket = selectedTicketsData.find(t => t.id === ticketId);
-                                    if (selectedTicket) {
-                                        selectedTicket.quantity = quantity;
-                                    }
-                                    updateTotalPrice();
-                                });
-
-                                const ticketDiv = document.createElement('div');
-                                ticketDiv.classList.add('selected-ticket');
-                                ticketDiv.innerHTML = `<span>${ticketName}</span> - Cena: ${ticketPrice.toFixed(2)} Kč - Typ: ${ticket.type}`;
-                                ticketDiv.appendChild(quantityInput);
-
-                                selectedTickets.appendChild(ticketDiv);
-
-                                // Add ticket to selectedTicketsData
-                                selectedTicketsData.push({
-                                    id: ticketId,
-                                    name: ticketName,
-                                    price: ticketPrice,
-                                    quantity: 1
-                                });
-
-                                updateTotalPrice(); // Update the total price
-                                ticketList.style.display = 'none';
-                            });
-
-                            ticketList.appendChild(listItem);
-                        });
-                        ticketList.style.display = 'block';
-                    } else {
-                        ticketList.style.display = 'none';
-                    }
-                })
-                .catch(error => {
-                    console.error('Chyba při získávání vstupenek:', error);
-                });
-        });
-
-
-        document.querySelector('form').addEventListener('submit', function (event) {
-            console.log("Obsah selectedTicketsData před odesláním:", selectedTicketsData);
-
-            const orderTicketsInput = document.getElementById('OrderTickets');
-            orderTicketsInput.value = JSON.stringify(selectedTicketsData);
-
-            console.log("Hodnota uložená do OrderTickets:", orderTicketsInput.value);
-        });
-
-
-
-
-
-        // Hide the ticket list when clicking outside
-        document.addEventListener('click', function (event) {
-            if (!ticketList.contains(event.target) && event.target !== ticketSearch) {
-                ticketList.style.display = 'none';
-            }
+        // Přidání události "odebrat lístek" pro nový prvek
+        const removeButton = section.querySelectorAll('.remove-ticket')[index];
+        removeButton.addEventListener('click', function () {
+            removeButton.closest('.ticket-row').remove();
         });
     });
 
-
-
+    // Odebrání lístku
+    document.querySelectorAll('.remove-ticket').forEach(button => {
+        button.addEventListener('click', function () {
+            button.closest('.ticket-row').remove();
+        });
+    });
 </script>

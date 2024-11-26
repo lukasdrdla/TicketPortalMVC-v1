@@ -1,58 +1,64 @@
 @model StoreViewModel
 
 @{
-    Layout = "~/Views/Shared/AdminLayout.cshtml";
+Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-
-<div class="container mt-5">
+<div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center">
-                    <h2 class="card-title mb-0">Přidat nový obchod</h2>
+        <div class="col-lg-8 col-md-10">
+            <div class="card border-0 shadow-lg">
+                <!-- Hlavička karty -->
+                <div class="card-header bg-gradient-primary text-dark text-center py-4">
+                    <h3 class="card-title mb-0">Přidat nový obchod</h3>
                 </div>
 
-                <div class="card-body py-4 px-5">
+                <!-- Tělo karty -->
+                <div class="card-body p-4">
                     <form asp-area="Admin" asp-controller="Store" asp-action="StoreCreate" method="post">
-
-                        <div class="mb-3">
-                            <label asp-for="Name" class="form-label fw-bold">Název</label>
-                            <input asp-for="Name" class="form-control" />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label asp-for="Address" class="form-label fw-bold">Adresa</label>
-                            <input asp-for="Address" class="form-control" />
-                            <span asp-validation-for="Address" class="text-danger"></span>
+                        <!-- Název -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Name" class="form-label fw-semibold">Název obchodu</label>
+                            <input asp-for="Name" class="form-control" placeholder="Zadejte název obchodu" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
                         </div>
 
-
-                        <div class="mb-3">
-                            <label asp-for="City" class="form-label fw-bold">Město</label>
-                            <input asp-for="City" class="form-control" />
-                            <span asp-validation-for="City" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label asp-for="Phone" class="form-label fw-bold">Telefon</label>
-                            <input asp-for="Phone" class="form-control" />
-                            <span asp-validation-for="Phone" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label asp-for="OpeningHours" class="form-label fw-bold">Otevírací hodiny</label>
-                            <textarea asp-for="OpeningHours" class="form-control" rows="7"></textarea>
-                            <span asp-validation-for="OpeningHours" class="text-danger"></span>
+                        <!-- Adresa -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Address" class="form-label fw-semibold">Adresa</label>
+                            <input asp-for="Address" class="form-control" placeholder="Zadejte adresu obchodu" />
+                            <span asp-validation-for="Address" class="text-danger small"></span>
                         </div>
 
+                        <!-- Město -->
+                        <div class="form-group mb-4">
+                            <label asp-for="City" class="form-label fw-semibold">Město</label>
+                            <input asp-for="City" class="form-control" placeholder="Zadejte město" />
+                            <span asp-validation-for="City" class="text-danger small"></span>
+                        </div>
 
+                        <!-- Telefon -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Phone" class="form-label fw-semibold">Telefon</label>
+                            <input asp-for="Phone" class="form-control" placeholder="Zadejte telefonní číslo" />
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                        </div>
 
+                        <!-- Otevírací hodiny -->
+                        <div class="form-group mb-4">
+                            <label asp-for="OpeningHours" class="form-label fw-semibold">Otevírací hodiny</label>
+                            <textarea asp-for="OpeningHours" class="form-control" rows="5" placeholder="Např. Po-Pá: 9:00-18:00, So-Ne: Zavřeno"></textarea>
+                            <span asp-validation-for="OpeningHours" class="text-danger small"></span>
+                        </div>
 
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-primary">Uložit nový obchod</button>
-                            <a asp-area="Admin" asp-controller="Store" asp-action="StoreList" class="btn btn-secondary">Zpět</a>
+                        <!-- Tlačítka -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="bi bi-check-circle"></i> Uložit
+                            </button>
+                            <a asp-area="Admin" asp-controller="Store" asp-action="StoreList" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-arrow-left"></i> Zpět
+                            </a>
                         </div>
                     </form>
                 </div>
@@ -60,5 +66,3 @@
         </div>
     </div>
 </div>
-
-

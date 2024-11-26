@@ -4,20 +4,21 @@
     Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-<div class="container mt-5">
+<div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center">
-                    <h2 class="card-title mb-0">Přidat nový lístek</h2>
+        <div class="col-lg-8 col-md-10">
+            <div class="card border-0 shadow-lg">
+                <!-- Hlavička karty -->
+                <div class="card-header bg-gradient-primary text-dark text-center py-4">
+                    <h3 class="card-title mb-0">Přidat nový lístek</h3>
                 </div>
 
-                <div class="card-body py-4 px-5">
+                <div class="card-body py-4">
                     <form asp-area="Admin" asp-controller="Ticket" asp-action="TicketCreate" method="post">
                         
                         <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label for="eventSearch" class="form-label fw-bold">Událost</label>
                             <input type="text" id="eventSearch" class="form-control" placeholder="Zadejte název události" autocomplete="off" />
                             <!-- Seznam událostí, který bude dynamicky naplněn -->
@@ -30,25 +31,33 @@
 
                         </div>
 
-                        <div class="form-group mb-3">
+                        <div class="form-group mb-4">
                             <label asp-for="Price" class="form-label fw-bold">Cena</label>
-                            <input type="number" asp-for="Price" class="form-control" />
+                            <input type="number" asp-for="Price" class="form-control" placeholder="Zadejte cenu" />
+                            <span asp-validation-for="Price" class="text-danger small"></span>
                         </div>
 
-                        <div class="form-group mb-3">
+                        <div class="form-group mb-4">
                             <label asp-for="Type" class="form-label fw-bold">Typ</label>
-                            <input asp-for="Type" class="form-control" />
+                            <input asp-for="Type" class="form-control" placeholder="Zadejte typ" />
+                            <span asp-validation-for="Type" class="text-danger small"></span>
                         </div>
 
-                        <div class="form-group mb-3">
+                        <div class="form-group mb-4">
                             <label asp-for="CreatedAt" class="form-label fw-bold">Vytvořeno</label>
                             <input asp-for="CreatedAt" class="form-control" type="datetime-local" />
+                            <span asp-validation-for="CreatedAt" class="text-danger small"></span>
                         </div>
 
 
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-primary">Uložit nový lístek</button>
-                            <a asp-area="Admin" asp-controller="Ticket" asp-action="TicketList" class="btn btn-secondary">Zpět</a>
+                        <!-- Tlačítka -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="bi bi-check-circle"></i> Uložit
+                            </button>
+                            <a asp-area="Admin" asp-controller="Ticket" asp-action="TicketList" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-arrow-left"></i> Zpět
+                            </a>
                         </div>
                     </form>
                 </div>

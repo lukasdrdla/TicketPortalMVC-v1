@@ -8,7 +8,7 @@ public interface IOrderService
 {
     Task<List<Order>> GetOrdersAsync();
     Task<Order> GetOrderByIdAsync(int id);
-    Task CreateOrderAsync(Order order);
+    Task<Order> CreateOrderAsync(Order order);
     Task UpdateOrderAsync(Order order);
     Task DeleteOrderAsync(int id);
 
@@ -17,4 +17,7 @@ public interface IOrderService
 
     Task<List<UserOrderViewModel>> GetUserOrdersAsync(string userId);
     Task<Order> CreateOrderFromCart(string userId);
+    
+    Task<bool> MarkOrderAsPaidAsync(int orderId);
+    Task<List<decimal>> GetTotalRevenueAsync();
 }

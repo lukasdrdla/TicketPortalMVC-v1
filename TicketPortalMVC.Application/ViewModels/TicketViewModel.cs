@@ -28,7 +28,6 @@ namespace TicketPortalMVC.Application.ViewModels
         public DateTime CreatedAt { get; set; } = DateTime.Now.Date;
         
         public string EventName { get; set; } = string.Empty;
-
         
 
         // Seznam všech událostí pro rozbalovací menu

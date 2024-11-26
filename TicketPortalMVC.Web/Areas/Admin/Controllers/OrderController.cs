@@ -22,11 +22,6 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
             _ticketService = ticketService;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
 
 
         [HttpGet]
@@ -44,7 +39,7 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
             var result = users.Select(u => new { id = u.Id, text = u.UserName }).ToList();
             return Json(result);
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> SearchTickets(string term)
         {
@@ -73,121 +68,126 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
             var orders = await _orderService.GetOrdersAsync();
             return View(orders);
         }
-        
-        public IActionResult OrderCreate()
+
+        [HttpGet]
+
+        public async Task<IActionResult> OrderCreate()
         {
-            var model = new OrderViewModel();
+            var availableTickets = await _ticketService.GetTicketsAsync();
+            var model = new OrderViewModel
+            {
+                AvailableTickets = availableTickets.Select(t => new OrderTicketViewModel
+                {
+                    TicketId = t.TicketId,
+                    EventName = t.Event.Name,
+                    Price = t.Price,
+                }).ToList()
+            };
+
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> OrderCreate(OrderViewModel model)
+        public async Task<IActionResult> OrderCreate(OrderViewModel order)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                foreach (var modelStateKey in ModelState.Keys)
+                foreach (var ticket in order.Tickets)
                 {
-                    var modelStateVal = ModelState[modelStateKey];
-                    foreach (var error in modelStateVal.Errors)
+                    var dbTicket = await _ticketService.GetTicketByIdAsync(ticket.TicketId);
+                    if (dbTicket == null)
                     {
-                        Console.WriteLine(error.ErrorMessage);
+                        ModelState.AddModelError("", $"Ticket with ID {ticket.TicketId} not found.");
+                        return View(order);
                     }
+
+                    ticket.Price = dbTicket.Price; // Aktualizuje cenu z databáze
                 }
-                return View(model);
+
+                var newOrder = new Order
+                {
+                    UserId = order.UserId,
+                    CreatedAt = order.CreatedAt,
+                    Total = order.Tickets.Sum(t => t.Price * t.Quantity),
+                    IsPaid = order.IsPaid,
+                    OrderTickets = order.Tickets.Select(t => new OrderTicket
+                    {
+                        TicketId = t.TicketId,
+                        Quantity = t.Quantity
+                    }).ToList()
+                };
+
+                await _orderService.CreateOrderAsync(newOrder);
+                return RedirectToAction("OrderList");
             }
 
-
-            var user = await _accountService.GetUserByIdAsync(model.UserId);
-            if (user == null)
-            {
-                ModelState.AddModelError("UserId", "User not found");
-                return View(model);
-            }
-
-            var order = new Order
-            {
-                UserId = model.UserId,
-                Total = model.TotalPrice,
-                CreatedAt = DateTime.Now
-            };
-            
-            List<OrderTicket> orderTickets = new List<OrderTicket>();
-            if (!string.IsNullOrEmpty(model.OrderTicketsJson))
-            {
-                try
-                {
-                    orderTickets = JsonConvert.DeserializeObject<List<OrderTicket>>(model.OrderTicketsJson);
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("OrderTicketsJson", "Invalid data format");
-                    return View(model);
-                }
-            }
-            
-            foreach (var orderTicket in orderTickets)
-            {
-                var ticket = await _ticketService.GetTicketByIdAsync(orderTicket.TicketId);
-                if (ticket == null)
-                {
-                    ModelState.AddModelError("OrderTicketsJson", "Ticket not found");
-                    return View(model);
-                }
-                order.OrderTickets.Add(new OrderTicket
-                {
-                    TicketId = orderTicket.TicketId,
-                    Quantity = orderTicket.Quantity,
-                });
-            }
-            
-            
-            
-
-            // Uložení objednávky do databáze
-            try
-            {
-                await _orderService.CreateOrderAsync(order);
-            }
-            catch (Exception ex)
-            {
-                // Pokud nastane chyba při ukládání, přidejte chybu do ModelState
-                ModelState.AddModelError(string.Empty, "Failed to create order: " + ex.Message);
-                return View(model);
-            }
-            return RedirectToAction("OrderList");
+            return View(order);
         }
 
-        
-        
-        
-        
-        public async Task<IActionResult> OrderDetail(int id)
-        {
-            var order = await _orderService.GetOrderByIdAsync(id);
-            
-            var model = new OrderViewModel
-            {
-                OrderId = order.OrderId,
-                CreatedAt = order.CreatedAt,
-                TotalPrice = order.Total,
-                OrderTickets = order.OrderTickets
-            };
 
-            
-            
-            return View(model);
-        }
-        
+
+
+
+
+
+
+
+
         [HttpPost]
         public async Task<IActionResult> DeleteOrder(int id)
         {
             await _orderService.DeleteOrderAsync(id);
             return RedirectToAction("OrderList");
         }
+
+
+        public async Task<IActionResult> OrderDetail(int id)
+        {
+            var order = await _orderService.GetOrderByIdAsync(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var model = new OrderDetailViewModel
+            {
+                OrderId = order.OrderId,
+                UserId = order.UserId,
+                FirstName = order.User.FirstName,
+                LastName = order.User.LastName,
+                CreatedAt = order.CreatedAt,
+                IsPaid = order.IsPaid,
+                Tickets = order.OrderTickets.Select(t => new OrderTicketViewModel
+                {
+                    TicketId = t.TicketId,
+                    Quantity = t.Quantity,
+                    Price = t.Ticket.Price,
+                    EventName = t.Ticket.Event.Name
+                }).ToList()
+
+            };
+
+            return View(model);
+
+        }
         
         
+        [HttpPost]
+        public async Task<IActionResult> MarkAsPaid(int id)
+        {
+            var success = await _orderService.MarkOrderAsPaidAsync(id);
+            if (!success)
+            {
+                return BadRequest("Chyba při označování objednávky jako zaplacené.");
+            }
+            return RedirectToAction("OrderDetail", new { id });
+        }
 
 
+    }
+    
+    
+    
 
-}
+
 }

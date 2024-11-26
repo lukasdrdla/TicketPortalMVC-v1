@@ -4,31 +4,22 @@
     Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-<div class="container mt-5">
+<div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-lg-8 col-md-10">
             <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center">
-                    <h2 class="card-title mb-0">@Model.Event.Name</h2>
-                    <p class="card-subtitle mt-1 text-light">
-                        <i class="bi bi-calendar3 me-2"></i> @Model.Event.Date.ToString("dd.MM.yyyy HH:mm")
-                    </p>
+                <!-- Hlavička karty -->
+                <div class="card-header bg-gradient-primary text-dark text-center py-4">
+                    <h3 class="card-title mb-0">Detail události: @Model.Event.Name</h3>
                 </div>
 
-                <div class="card-body py-4 px-5">
-                    <div class="row mb-3">
-                        <div class="col-12 d-flex align-items-center">
-                            <i class="bi bi-info-circle-fill me-2 text-primary"></i>
-                            <h5 class="mb-0">Detaily události</h5>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
+                <div class="card-body py-4">
+                    <div class="mb-4">
                         <label class="form-label fw-bold">Popis události</label>
                         <p class="border p-2 rounded">@Model.Event.Description</p>
                     </div>
 
-                    <div class="row mb-3">
+                    <div class="row mb-4">
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Místo konání</label>
                             <p class="border p-2 rounded">@Model.Event.Location</p>
@@ -41,7 +32,7 @@
                     
                     @if (Model.Event.EventRatings.Count > 0)
                     {
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label class="form-label">Hodnocení:</label>
                             <div class="border p-2 rounded">
                                 <p><strong>Celkové hodnocení:</strong> @Model.AverageRating</p>
@@ -59,7 +50,7 @@
                         
                     }
 
-                    <div class="mb-3">
+                    <div class="mb-4">
                         <label class="form-label fw-bold">Cena vstupenky</label>
                         <div class="border p-2 rounded">
                             @foreach (var ticket in Model.Event.Tickets)
@@ -73,22 +64,18 @@
                         <i class="bi bi-info-circle me-2"></i>
                         <div><strong>Vytvořeno:</strong> @Model.Event.CreatedAt.ToString("dd.MM.yyyy HH:mm")</div>
                     </div>
-                </div>
 
-                <div class="card-footer text-center py-3">
-                    <form asp-area="Admin" asp-controller="Event" asp-action="EventDelete" method="post" class="d-inline">
-                        <input type="hidden" name="id" value="@Model.Event.EventId" />
-                        <button type="submit" class="btn btn-danger btn-sm">
-                            <i class="bi bi-trash"></i> Smazat událost
-                        </button>
-                    </form>
-                    <a href="@Url.Action("EventEdit", "Event", new { id = Model.Event.EventId })" class="btn btn-warning btn-sm">
-                        <i class="bi bi-pencil-square"></i> Upravit událost
-                    </a>
-                    <a href="@Url.Action("EventList", "Event")" class="btn btn-secondary btn-sm">
-                        <i class="bi bi-arrow-left-circle"></i> Zpět na seznam událostí
-                    </a>
+                    <!-- Akce -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-area="Admin" asp-controller="Event" asp-action="EventEdit" asp-route-id="@Model.Event.EventId" class="btn btn-primary px-4">
+                            <i class="bi bi-pencil"></i> Upravit
+                        </a>
+                        <a asp-area="Admin" asp-controller="Event" asp-action="EventList" class="btn btn-outline-secondary px-4">
+                            <i class="bi bi-arrow-left"></i> Zpět
+                        </a>
+                    </div>
                 </div>
+                
             </div>
         </div>
     </div>

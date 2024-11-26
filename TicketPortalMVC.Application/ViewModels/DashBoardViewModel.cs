@@ -15,6 +15,10 @@ namespace TicketPortalMVC.Application.ViewModels
 
 
         public List<Domain.Entities.Order> Orders { get; set; }
+        
+        public List<string> Months { get; set; } = new List<string>();
+        public List<decimal> Revenues { get; set; } = new List<decimal>();
+        
 
     }
 }

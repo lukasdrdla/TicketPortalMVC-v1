@@ -34,7 +34,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>UserId</th>
+                        <th>Uživatel</th>
                         <th>Celková cena</th>
                         <th>Zap paid</th>
                         <th class="text-end">Akce</th>
@@ -45,7 +45,7 @@
                     {
                         <tr>
                             <td>@item.OrderId</td>
-                            <td>@item.UserId</td>
+                            <td>@item.User.FirstName @item.User.LastName</td>
                             <td>@item.Total.ToString("C")</td>
                             <td>@(item.IsPaid ? "Ano" : "Ne")</td>
                             <td class="text-end">

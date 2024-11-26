@@ -16,6 +16,7 @@ public interface IAccountService
     Task UpdateUserAsync(User user);
     Task DeleteUserAsync(int id);
     
+    
     // Extra methods
     Task<List<User>> SearchUsersAsync(string term);
 }

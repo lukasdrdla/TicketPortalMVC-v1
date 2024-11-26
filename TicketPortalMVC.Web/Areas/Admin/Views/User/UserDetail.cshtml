@@ -3,116 +3,83 @@
 Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <!-- User Profile Section -->
-            <div class="user-profile bg-light p-4 rounded-lg shadow-lg">
+<div class="container my-5">
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <div class="card shadow-lg border-0">
+            <!-- Hlavička karty -->
+            <div class="card-header bg-gradient-primary text-dark text-center py-4">
+                <h3 class="card-title mb-0">Detail uživatele: @Model.FirstName @Model.LastName</h3>
+            </div>
 
-                <!-- Header -->
-                <div class="text-center mb-5">
-                    <h1 class="display-4 text-dark">@Model.FirstName @Model.LastName</h1>
-                    <p class="lead text-muted">@Model.Email</p>
-                    <div class="user-id d-flex justify-content-center mt-3">
-                        <span class="badge bg-info text-dark fs-6">ID: @Model.Id</span>
-                    </div>
+            <!-- Tělo karty -->
+            <div class="card-body p-4">
+                <!-- Jméno -->
+                <div class="mb-3">
+                    <h5 class="fw-semibold">Jméno:</h5>
+                    <p class="text-muted">@Model.FirstName</p>
                 </div>
-
-                <!-- Personal Information Section -->
-                <div class="personal-info mb-4">
-                    <h4 class="text-primary mb-3">Osobní Informace</h4>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="fw-bold">Jméno</label>
-                            <div class="info-box">@Model.FirstName</div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="fw-bold">Přijmení</label>
-                            <div class="info-box">@Model.LastName</div>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="fw-bold">Město</label>
-                            <div class="info-box">@Model.City</div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="fw-bold">Země</label>
-                            <div class="info-box">@Model.Country</div>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="fw-bold">Adresa</label>
-                            <div class="info-box">@Model.Address</div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="fw-bold">PSČ</label>
-                            <div class="info-box">@Model.PostalCode</div>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="fw-bold">Role</label>
-                            <div class="info-box">@Model.Role</div>
-                        </div>
-                    </div>
+                    
+                <!-- Příjmení -->
+                <div class="mb-3">
+                    <h5 class="fw-semibold">Příjmení:</h5>
+                    <p class="text-muted">@Model.LastName</p>
                 </div>
-
-                <!-- Edit Button Section -->
-                <div class="d-flex justify-content-center mt-4">
-                    <a href="@Url.Action("UserEdit", "User", new { id = Model.Id })" class="btn btn-primary px-4 py-2">
-                        <i class="bi bi-pencil-square"></i> Upravit uživatele
+                    
+                <!-- Email -->
+                <div class="mb-3">
+                    <h5 class="fw-semibold">Email:</h5>
+                    <p class="text-muted">@Model.Email</p>
+                </div>
+                    
+                <!-- Telefon -->
+                <div class="mb-3">
+                    <h5 class="fw-semibold">Telefon:</h5>
+                    <p class="text-muted">@Model.PhoneNumber</p>
+                </div>
+                    
+                <!-- Město -->
+                <div class="mb-3">
+                    <h5 class="fw-semibold">Město:</h5>
+                    <p class="text-muted">@Model.City</p>
+                </div>
+                    
+                <!-- Adresa -->
+                <div class="mb-3">
+                    <h5 class="fw-semibold">Adresa:</h5>
+                    <p class="text-muted">@Model.Address</p>
+                </div>
+                    
+                <!--PSČ -->
+                <div class="mb-3">
+                    <h5 class="fw-semibold">PSČ:</h5>
+                    <p class="text-muted">@Model.PostalCode</p>
+                </div>
+                    
+                <!-- Země -->
+                <div class="mb-3">
+                    <h5 class="fw-semibold">Země:</h5>
+                    <p class="text-muted">@Model.Country</p>
+                </div>
+                    
+                <!-- Role -->
+                <div class="mb-3">
+                    <h5 class="fw-semibold">Role:</h5>
+                    <p class="text-muted">@Model.Role</p>
+                </div>
+                    
+                    
+                <!-- Akce -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-area="Admin" asp-controller="User" asp-action="UserEdit" asp-route-id="@Model.Id" class="btn btn-primary px-4">
+                        <i class="bi bi-pencil"></i> Upravit
+                    </a>
+                    <a asp-area="Admin" asp-controller="User" asp-action="UserList" class="btn btn-outline-secondary px-4">
+                        <i class="bi bi-arrow-left"></i> Zpět
                     </a>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .user-profile {
-        background-color: #f8f9fa;
-        border-radius: 15px;
-        padding: 2rem;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .info-box {
-        background-color: #ffffff;
-        padding: 1rem;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        font-size: 1.1rem;
-        color: #333;
-    }
-
-    h1 {
-        font-size: 2.5rem;
-        color: #333;
-    }
-
-    h4 {
-        font-size: 1.5rem;
-        color: #007bff;
-    }
-
-    .badge {
-        font-size: 1.1rem;
-        font-weight: bold;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        border: none;
-        color: white;
-        font-size: 1.1rem;
-        transition: background-color 0.3s;
-    }
-
-    .btn-primary:hover {
-        background-color: #0056b3;
-    }
-
-</style>
+</div>

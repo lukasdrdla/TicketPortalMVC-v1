@@ -22,13 +22,16 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var totalRevenue = await _orderService.GetTotalRevenueAsync();
             var model = new DashBoardViewModel
             {
                 TotalTickets = await _ticketService.GetTotalTicketsAsync(),
                 TotalCustomers = 20,
                 TotalEvents = await _eventService.GetTotalEventsAsync(),
                 TotalOrders = await _orderService.GetTotalOrdersAsync(),
-                Orders = await _orderService.GetOrdersAsync()
+                Orders = await _orderService.GetOrdersAsync(),
+                Months = new List<string> { "Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec" },
+                Revenues = totalRevenue
             };
 
             return View(model);

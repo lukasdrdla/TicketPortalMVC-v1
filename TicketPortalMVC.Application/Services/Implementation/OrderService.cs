@@ -10,15 +10,16 @@ namespace TicketPortalMVC.Application.Services.Implementation;
 public class OrderService : IOrderService
 {
     private readonly ApplicationDbContext _context;
-    private IOrderService _orderServiceImplementation;
-
+    
     public OrderService(ApplicationDbContext context)
     {
         _context = context;
     }
     public async Task<List<Order>> GetOrdersAsync()
     {
-        var orders = await _context.Orders.ToListAsync();
+        var orders = await _context.Orders
+            .Include(o => o.User)
+            .ToListAsync();
         return orders;
     }
 
@@ -37,24 +38,26 @@ public class OrderService : IOrderService
         return order;
     }
 
-    public async Task CreateOrderAsync(Order order)
+    public async Task<Order> CreateOrderAsync(Order order)
     {
         if (order == null)
         {
             throw new Exception("Order is null");
         }
-        
+
         try
         {
-            await _context.Orders.AddAsync(order);
+            _context.Orders.Add(order);
             await _context.SaveChangesAsync();
         }
         catch (Exception ex)
         {
             throw new Exception("Failed to create order", ex);
         }
-        
+
+        return order;
     }
+
 
     public async Task UpdateOrderAsync(Order order)
     {
@@ -170,6 +173,53 @@ public class OrderService : IOrderService
 
         return order;    
     }
+
+    public async Task<bool> MarkOrderAsPaidAsync(int orderId)
+    {
+        var order = await _context.Orders.FindAsync(orderId);
+        if (order == null)
+        {
+            throw new Exception("Order not found");
+        }
+        
+        order.IsPaid = true;
+        
+        try
+        {
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to mark order as paid", ex);
+        }
+        
+    }
+
+    public async Task<List<decimal>> GetTotalRevenueAsync()
+    {
+        // Načtení tržeb seskupených podle měsíce
+        var revenues = await _context.Orders
+            .Where(o => o.IsPaid)
+            .GroupBy(o => new { o.CreatedAt.Year, o.CreatedAt.Month })
+            .Select(g => new 
+            {
+                Month = g.Key.Month,
+                Total = g.Sum(o => o.Total)
+            })
+            .ToListAsync();
+
+        // Vytvoření seznamu všech měsíců (1–12) s výchozí hodnotou 0
+        var fullRevenues = Enumerable.Range(1, 12)
+            .Select(month => revenues.FirstOrDefault(r => r.Month == month)?.Total ?? 0m)
+            .ToList();
+
+        return fullRevenues;
+    }
+
+    
+
 
     public async Task<int> GetTotalOrdersAsync()
     {

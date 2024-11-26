@@ -100,6 +100,11 @@
         $(document).ready(function () {
             $('#stores').DataTable();
         });
+        $(document).ready(function () {
+            $('#dashboard').DataTable();
+        });
+        
+        
         
     </script>
 </body>
@@ -151,4 +156,35 @@
     main {
         margin-left: 16.67%; /* Posun hlavního obsahu vedle sidebaru */
     }
+    
+
+    .card {
+        border-radius: 20px;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border: none;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+    }
+
+    .btn-outline-secondary {
+        border-color: #6c757d;
+        transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        color: #fff;
+    }
+    
+    .card-header {
+        border-radius: 20px 20px 0 0 !important;
+    }
+
 </style>
+

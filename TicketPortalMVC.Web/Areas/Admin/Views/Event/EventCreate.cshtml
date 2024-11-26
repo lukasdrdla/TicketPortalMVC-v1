@@ -4,55 +4,61 @@
     Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-<div class="container mt-5">
+<div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center">
-                    <h2 class="card-title mb-0">Přidat novou událost</h2>
+        <div class="col-lg-8 col-md-10">
+            <div class="card border-0 shadow-lg">
+                <!-- Hlavička karty -->
+                <div class="card-header bg-gradient-primary text-dark text-center py-4">
+                    <h3 class="card-title mb-0">Přidat novou událost</h3>
                 </div>
 
-                <div class="card-body py-4 px-5">
+                <div class="card-body py-4">
                     <form asp-area="Admin" asp-controller="Event" asp-action="EventCreate" method="post">
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label asp-for="@Model.ImageUrl" class="form-label fw-bold">Obrázek</label>
                             <input asp-for="@Model.ImageUrl" class="form-control" required />
                             <span asp-validation-for="@Model.ImageUrl" class="text-danger"></span>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label asp-for="@Model.Name" class="form-label fw-bold">Název</label>
                             <input asp-for="@Model.Name" class="form-control" required />
                             <span asp-validation-for="@Model.Name" class="text-danger"></span>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label asp-for="@Model.Location" class="form-label fw-bold">Lokace</label>
                             <input asp-for="@Model.Location" class="form-control" required />
                             <span asp-validation-for="@Model.Location" class="text-danger"></span>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label asp-for="@Model.Date" class="form-label fw-bold">Datum</label>
                             <input asp-for="@Model.Date" class="form-control" type="datetime-local" required />
                             <span asp-validation-for="@Model.Date" class="text-danger"></span>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label asp-for="@Model.Capacity" class="form-label fw-bold">Kapacita</label>
                             <input asp-for="@Model.Capacity" class="form-control" type="number" required />
                             <span asp-validation-for="@Model.Capacity" class="text-danger"></span>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label asp-for="@Model.Description" class="form-label fw-bold">Popis</label>
                             <textarea asp-for="@Model.Description" class="form-control" rows="3" required></textarea>
                             <span asp-validation-for="@Model.Description" class="text-danger"></span>
                         </div>
 
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-primary">Uložit novou událost</button>
-                            <a asp-area="Admin" asp-controller="Event" asp-action="EventList" class="btn btn-secondary">Zpět</a>
+                        <!-- Tlačítka -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="bi bi-check-circle"></i> Uložit
+                            </button>
+                            <a asp-area="Admin" asp-controller="Event" asp-action="EventList" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-arrow-left"></i> Zpět
+                            </a>
                         </div>
                     </form>
                 </div>

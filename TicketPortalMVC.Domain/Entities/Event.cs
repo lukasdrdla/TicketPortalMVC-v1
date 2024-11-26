@@ -12,6 +12,5 @@ public class Event
     public DateTime CreatedAt { get; set; }
     
     public List<Ticket> Tickets { get; set; } = new();
-    public ICollection<EventRating> EventRatings { get; set; }
-    public double AverageRating => EventRatings.Count > 0 ? EventRatings.Average(x => x.Rating) : 0;
+    public ICollection<EventRating> EventRatings { get; set; } = new List<EventRating>();
 }

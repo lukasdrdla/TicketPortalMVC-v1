@@ -4,61 +4,61 @@
     Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-<div class="container mt-5">
+<div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-lg-8 col-md-10">
             <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center">
-                    <h2 class="card-title mb-0">Úprava uživatele: @Model.Email</h2>
-                    <p class="card-subtitle mt-1 text-light">@Model.Id</p>
+                <!-- Hlavička karty -->
+                <div class="card-header bg-gradient-primary text-dark text-center py-4">
+                    <h2 class="card-title mb-0">Úprava uživatele: @Model.FirstName @Model.LastName</h2>
                 </div>
 
-                <div class="card-body py-4 px-5">
+                <div class="card-body py-4">
                     <form asp-area="Admin" asp-controller="User" asp-action="UserEdit" method="post">
                         <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-                        <div class="form-group">
+                        <div class="form-group mb-4">
                             <label for="Email">Email</label>
                             <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required />
                         </div>
                         
-                        <div class="form-group">
+                        <div class="form-group mb-4">
                             <label asp-for="Address" class="form-label">Adresa</label>
                             <input asp-for="Address" class="form-control" placeholder="Zadejte svou adresu" />
                             <span asp-validation-for="Address" class="text-danger"></span>
                         </div>
                         
-                        <div class="form-group">
+                        <div class="form-group mb-4">
                             <label asp-for="City" class="form-label">Město</label>
                             <input asp-for="City" class="form-control" placeholder="Zadejte své město" />
                             <span asp-validation-for="City" class="text-danger"></span>
                         </div>
                         
-                        <div class="form-group">
+                        <div class="form-group mb-4">
                             <label asp-for="PostalCode" class="form-label">PSČ</label>
                             <input asp-for="PostalCode" class="form-control" placeholder="Zadejte PSČ" />
                             <span asp-validation-for="PostalCode" class="text-danger"></span>
                         </div>
                         
-                        <div class="form-group">
+                        <div class="form-group mb-4">
                             <label asp-for="Country" class="form-label">Země</label>
                             <input asp-for="Country" class="form-control" placeholder="Zadejte svou zemi" />
                             <span asp-validation-for="Country" class="text-danger"></span>
                         </div>
                         
-                        <div class="form-group">
+                        <div class="form-group mb-4">
                             <label asp-for="PhoneNumber" class="form-label">Telefonní číslo</label>
                             <input asp-for="PhoneNumber" class="form-control" placeholder="Zadejte telefonní číslo" />
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
                         
-                        <div class="form-group">
+                        <div class="form-group mb-4">
                             <label asp-for="FirstName" class="form-label">Křestní jméno</label>
                             <input asp-for="FirstName" class="form-control" placeholder="Zadejte své křestní jméno" />
                             <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
                         
-                        <div class="form-group">
+                        <div class="form-group mb-4">
                             <label asp-for="LastName" class="form-label">Příjmení</label>
                             <input asp-for="LastName" class="form-control" placeholder="Zadejte své příjmení" />
                             <span asp-validation-for="LastName" class="text-danger"></span>
@@ -66,7 +66,7 @@
                         
                         
 
-                        <div class="form-group">
+                        <div class="form-group mb-4">
                             <label asp-for="Role" class="form-label">Role</label>
                         <select asp-for="Role" class="form-control">
                             <option value="">Vyber roli</option>
@@ -76,9 +76,14 @@
                             }
                         </select>
                         </div>
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-primary">Uložit změny</button>
-                            <a asp-area="Admin" asp-controller="User" asp-action="UserList" class="btn btn-secondary">Zpět</a>
+                        <!-- Tlačítka -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="bi bi-check-circle"></i> Uložit změny
+                            </button>
+                            <a asp-area="Admin" asp-controller="User" asp-action="UserList" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-arrow-left"></i> Zpět
+                            </a>
                         </div>
                     </form>
                 </div>

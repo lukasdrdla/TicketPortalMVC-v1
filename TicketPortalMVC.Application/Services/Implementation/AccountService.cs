@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TicketPortalMVC.Application.Services.Interface;
 using TicketPortalMVC.Application.ViewModels;
@@ -121,6 +122,7 @@ public class AccountService : IAccountService
             throw new InvalidOperationException("An error occurred during user deletion.");
         }
     }
+    
 
 
     public async Task LogoutAsync()

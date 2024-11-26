@@ -1,69 +1,58 @@
 ﻿@model Ticket
 
 @{
-    Layout = "~/Views/Shared/AdminLayout.cshtml";
+Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-<div class="container mt-5">
+<div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-lg-8 col-md-10">
             <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center">
-                    <h2 class="card-title mb-0">Lístek ID - @Model.TicketId</h2>
-                    <p class="card-subtitle mt-1 text-light">
-                        <i class="bi bi-calendar3 me-2"></i> @Model.Event.Date.ToString("dd.MM.yyyy HH:mm")
-                    </p>
+                <!-- Hlavička karty -->
+                <div class="card-header bg-gradient-primary text-dark text-center py-4">
+                    <h3 class="card-title mb-0">Detail lístku: @Model.Event.Name</h3>
                 </div>
 
-                <div class="card-body py-4 px-5">
-                    <div class="row mb-3">
-                        <div class="col-12 d-flex align-items-center">
-                            <i class="bi bi-ticket-perforated-fill me-2 text-primary"></i>
-                            <h5 class="mb-0">Informace o lístku</h5>
-                        </div>
-                    </div>
-
+                <!-- Tělo karty -->
+                <div class="card-body p-4">
+                    <!-- Název -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Název události</label>
-                        <p class="border p-2 rounded">@Model.Event.Name</p>
+                        <h5 class="fw-semibold">Název:</h5>
+                        <p class="text-muted">@Model.Event.Name</p>
                     </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Místo konání</label>
-                            <p class="border p-2 rounded">@Model.Event.Location</p>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Kapacita</label>
-                            <p class="border p-2 rounded">@Model.Event.Capacity.ToString()</p>
-                        </div>
-                    </div>
-
+                    
+                    <!-- Cena -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Cena vstupenky</label>
-                        <p class="border p-2 rounded">@Model.Price.ToString("C") - @Model.Type</p>
+                        <h5 class="fw-semibold">Cena:</h5>
+                        <p class="text-muted">@Model.Price</p>
                     </div>
-
-                    <div class="alert alert-secondary d-flex align-items-center">
-                        <i class="bi bi-info-circle me-2"></i>
-                        <div><strong>Vytvořeno:</strong> @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</div>
+                    
+                    <!-- Typ -->
+                    <div class="mb-3">
+                        <h5 class="fw-semibold">Typ:</h5>
+                        <p class="text-muted">@Model.Type</p>
                     </div>
-                </div>
+                    
+                    <!-- Datum a čas -->
+                    <div class="mb-3">
+                        <h5 class="fw-semibold">Datum a čas:</h5>
+                        <p class="text-muted">@Model.Event.Date</p>
+                    </div>
+                    
 
-                <div class="card-footer text-center py-3">
-                    <a href="@Url.Action("TicketEdit", "Ticket", new { id = Model.TicketId })" class="btn btn-warning btn-sm">
-                        <i class="bi bi-pencil-square"></i> Upravit lístek
-                    </a>
-                    <form asp-area="Admin" asp-controller="Ticket" asp-action="TicketDelete" method="post" class="d-inline" asp-route-id="@Model.TicketId">
-                        <button type="submit" class="btn btn-danger btn-sm">
-                            <i class="bi bi-trash"></i> Smazat lístek
-                        </button>
-                    </form>
-                    <a href="@Url.Action("TicketList", "Ticket")" class="btn btn-secondary btn-sm">
-                        <i class="bi bi-arrow-left-circle"></i> Zpět na seznam lístků
-                    </a>
+
+                    <!-- Akce -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-area="Admin" asp-controller="Ticket" asp-action="TicketEdit" asp-route-id="@Model.TicketId" class="btn btn-primary px-4">
+                            <i class="bi bi-pencil"></i> Upravit
+                        </a>
+                        <a asp-area="Admin" asp-controller="Ticket" asp-action="TicketList" class="btn btn-outline-secondary px-4">
+                            <i class="bi bi-arrow-left"></i> Zpět
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
