@@ -13,7 +13,10 @@ public interface IOrderService
     Task DeleteOrderAsync(int id);
 
     Task<int> GetTotalOrdersAsync();
+    
 
+    Task AddTicketToOrderAsync(int orderId, int ticketId, int quantity);
+    Task RemoveTicketFromOrderAsync(int orderId, int ticketId);
 
     Task<List<UserOrderViewModel>> GetUserOrdersAsync(string userId);
     Task<Order> CreateOrderFromCart(string userId);

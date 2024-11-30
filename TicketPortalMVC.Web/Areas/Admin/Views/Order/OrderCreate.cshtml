@@ -4,7 +4,7 @@
 Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-<div class="container mt-4">
+<div class="container mt-4 py-3">
     <h2 class="mb-4">Vytvořit objednávku</h2>
 
     <form asp-action="OrderCreate" asp-controller="Order" asp-area="Admin">
@@ -15,10 +15,16 @@ Layout = "~/Views/Shared/AdminLayout.cshtml";
         </div>
         }
         <!-- Sekce uživatele -->
-        <div class="form-group mb-3">
-            <label asp-for="UserId" class="form-label">ID Uživatele</label>
-            <input asp-for="UserId" class="form-control" placeholder="Zadejte ID uživatele" />
-            <span asp-validation-for="UserId" class="text-danger"></span>
+        <div class="mb-4">
+            <label asp-for="UserId" class="form-label fw-bold">User</label>
+            <select asp-for="UserId" class="form-select shadow-sm">
+                <option value="">-- Select User --</option>
+                @foreach (var user in Model.AvailableUsers)
+                {
+                <option value="@user.Id">@user.FirstName @user.LastName</option>
+                }
+            </select>
+            <div class="invalid-feedback d-block" asp-validation-for="UserId"></div>
         </div>
 
         <!-- Sekce status platby -->
@@ -40,9 +46,9 @@ Layout = "~/Views/Shared/AdminLayout.cshtml";
                     <option value="">-- Vyberte --</option>
                     @foreach (var ticket in Model.AvailableTickets)
                     {
-                    <option value="@ticket.TicketId" data-price="@ticket.Price">
-                        @ticket.EventName - @ticket.Price Kč
-                    </option>
+                        <option value="@ticket.TicketId" data-price="@ticket.Price">
+                            @ticket.EventName - @ticket.Price Kč
+                        </option>
                     }
                 </select>
                 <div class="row mt-3">
@@ -58,6 +64,14 @@ Layout = "~/Views/Shared/AdminLayout.cshtml";
                 <button type="button" class="btn btn-danger mt-3 remove-ticket">Odebrat</button>
             </div>
         </div>
+        
+        <!-- Total price -->
+        
+        <div class="form-group mb-3">
+            <label asp-for="Total" class="form-label">Celková cena</label>
+            <input asp-for="Total" class="form-control" placeholder="Celková cena" id="total" readonly />
+            <span asp-validation-for="Total" class="text-danger"></span>
+        </div>
 
         <!-- Přidání dalšího lístku -->
         <button type="button" id="add-ticket" class="btn btn-secondary mb-3">Přidat další lístek</button>
@@ -70,14 +84,22 @@ Layout = "~/Views/Shared/AdminLayout.cshtml";
 </div>
 
 <script>
-    // Funkce pro dynamickou aktualizaci ceny na základě výběru
     function updateTicketInfo(select) {
         const selectedOption = select.options[select.selectedIndex];
         const priceInput = select.closest('.ticket-row').querySelector('.ticket-price');
+        const quantityInput = select.closest('.ticket-row').querySelector('input[type="number"]');
+                
         priceInput.value = selectedOption.dataset.price || '';
+        quantityInput.value = 1;
+        
+        quantityInput.addEventListener('change', function () {
+            updateTotalPrice();
+        });
+        
+        updateTotalPrice();
+    
     }
 
-    // Přidání dalšího lístku
     document.getElementById('add-ticket').addEventListener('click', function () {
         const section = document.getElementById('tickets-section');
         const index = section.querySelectorAll('.ticket-row').length;
@@ -107,17 +129,28 @@ Layout = "~/Views/Shared/AdminLayout.cshtml";
         </div>`;
         section.insertAdjacentHTML('beforeend', newTicket);
 
-        // Přidání události "odebrat lístek" pro nový prvek
         const removeButton = section.querySelectorAll('.remove-ticket')[index];
         removeButton.addEventListener('click', function () {
             removeButton.closest('.ticket-row').remove();
         });
     });
 
-    // Odebrání lístku
     document.querySelectorAll('.remove-ticket').forEach(button => {
         button.addEventListener('click', function () {
             button.closest('.ticket-row').remove();
         });
     });
+    
+    function updateTotalPrice() {
+        const ticketRows = document.querySelectorAll('.ticket-row');
+        let total = 0;
+        ticketRows.forEach(row => {
+            const price = parseFloat(row.querySelector('.ticket-price').value) || 0;
+            const quantity = parseInt(row.querySelector('input[type="number"]').value) || 0;
+            total += price * quantity;
+        });
+        document.getElementById('total').value = total.toFixed(2);
+    }
+
+    
 </script>

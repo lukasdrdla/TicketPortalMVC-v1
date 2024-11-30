@@ -37,10 +37,20 @@ public class StoreService : IStoreService
         await _context.SaveChangesAsync();
     }
 
-    public Task UpdateStoreAsync(Store store)
+    public async Task UpdateStoreAsync(Store store)
     {
-        _context.Stores.Update(store);
-        return _context.SaveChangesAsync();
+        var existingStore = await _context.Stores.FindAsync(store.StoreId);
+        if (existingStore == null)
+            throw new Exception("Store not found");
+        
+        existingStore.Name = store.Name;
+        existingStore.Address = store.Address;
+        existingStore.City = store.City;
+        existingStore.Phone = store.Phone;
+        existingStore.OpeningHours = store.OpeningHours;
+        
+        await _context.SaveChangesAsync();
+        
         
     }
 

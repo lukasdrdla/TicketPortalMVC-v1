@@ -26,10 +26,10 @@ public class OrderService : IOrderService
     public async Task<Order> GetOrderByIdAsync(int id)
     {
         var order = await _context.Orders
-            .Include(o => o.OrderTickets)         // Načteme položky objednávky
+            .Include(o => o.OrderTickets)         
             .ThenInclude(ot => ot.Ticket)
-            .ThenInclude(t => t.Event)            // Načteme události
-            .Include(o => o.User)                 // Načteme uživatele
+            .ThenInclude(t => t.Event)            
+            .Include(o => o.User) 
             .FirstOrDefaultAsync(o => o.OrderId == id);
         if (order == null)
         {
@@ -65,18 +65,6 @@ public class OrderService : IOrderService
         {
             throw new Exception("Order is null");
         }
-        
-        var existingOrder = await _context.Orders.FindAsync(order.OrderId);
-        if (existingOrder == null)
-        {
-            throw new Exception("Order not found");
-        }
-        
-        existingOrder.UserId = order.UserId;
-        existingOrder.Total = order.Total;
-        existingOrder.CreatedAt = order.CreatedAt;
-        existingOrder.IsPaid = order.IsPaid;
-        
 
         try
         {
@@ -87,6 +75,7 @@ public class OrderService : IOrderService
         {
             throw new Exception("Failed to update order", ex);
         }
+
         
     }
 
@@ -111,6 +100,24 @@ public class OrderService : IOrderService
         
         
     }
+
+
+    public async Task RemoveTicketFromOrderAsync(int orderId, int ticketId)
+    {
+        var order = await _context.Orders.Include(o => o.OrderTickets)
+            .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+        if (order != null)
+        {
+            var ticketOrder = order.OrderTickets.FirstOrDefault(t => t.TicketId == ticketId);
+            if (ticketOrder != null)
+            {
+                order.OrderTickets.Remove(ticketOrder);
+                await _context.SaveChangesAsync();
+            }
+        }
+    }
+
 
     public async Task<List<UserOrderViewModel>> GetUserOrdersAsync(string userId)
     {
@@ -226,4 +233,30 @@ public class OrderService : IOrderService
         var totalOrders = await _context.Orders.CountAsync();
         return totalOrders;
     }
+
+    public async Task AddTicketToOrderAsync(int orderId, int ticketId, int quantity)
+    {
+        var order = await _context.Orders.Include(o => o.OrderTickets)
+            .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+        if (order != null)
+        {
+            var ticketOrder = order.OrderTickets.FirstOrDefault(t => t.TicketId == ticketId);
+            if (ticketOrder != null)
+            {
+                ticketOrder.Quantity += quantity;
+            }
+            else
+            {
+                order.OrderTickets.Add(new OrderTicket
+                {
+                    TicketId = ticketId,
+                    Quantity = quantity
+                });
+            }
+
+            await _context.SaveChangesAsync();
+        }
+    }
+
 }

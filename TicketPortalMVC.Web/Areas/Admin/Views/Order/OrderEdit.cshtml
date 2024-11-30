@@ -1,0 +1,154 @@
+@model OrderEditViewModel
+
+@{
+Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Edit Order</h2>
+
+    <form asp-action="OrderEdit" asp-controller="Order" asp-area="Admin" method="post" class="bg-white p-4 shadow-sm rounded">
+        <input type="hidden" asp-for="OrderId" />
+
+        <!-- User Section -->
+        <div class="mb-4">
+            <label asp-for="UserId" class="form-label fw-bold">User</label>
+            <select asp-for="UserId" class="form-select shadow-sm">
+                <option value="">-- Select User --</option>
+                @foreach (var user in Model.AvailableUsers)
+                {
+                <option value="@user.Id">@user.FirstName @user.LastName</option>
+                }
+            </select>
+            <div class="invalid-feedback d-block" asp-validation-for="UserId"></div>
+        </div>
+
+        <!-- Tickets Section -->
+        <div id="tickets-section">
+            <h4 class="fw-bold mb-3">Tickets</h4>
+            <table class="table table-bordered table-striped table-hover shadow-sm">
+                <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var ticket in Model.Tickets)
+                {
+                <input type="hidden" name="Tickets[@Model.Tickets.IndexOf(ticket)].TicketId" value="@ticket.TicketId" />
+                <tr>
+                    <td>@ticket.EventName</td>
+                    <td>@ticket.Price Kč</td>
+                    <td>
+                        <input type="number" name="Tickets[@Model.Tickets.IndexOf(ticket)].Quantity"
+                               id="ticket-quantity-@ticket.TicketId"
+                               value="@ticket.Quantity"
+                               min="1" class="form-control" />
+                    </td>
+                    <td>
+                        <button type="button" data-ticket-id="@ticket.TicketId" data-order-id="@Model.OrderId" class="btn btn-danger deleteButton">
+                            <i class="bi bi-trash"></i> Remove
+                        </button>
+                    </td>
+                </tr>
+                }
+                </tbody>
+            </table>
+
+            <!-- Add New Ticket Button -->
+            <button type="button" id="add-ticket" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addTicketModal">
+                <i class="bi bi-plus-circle"></i> Add Ticket
+            </button>
+
+            <!-- Modal for adding ticket -->
+            <div class="modal fade" id="addTicketModal" tabindex="-1" aria-labelledby="addTicketModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addTicketModalLabel">Add Ticket to Order</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="ticket-select" class="form-label">Select Ticket</label>
+                            <select id="ticket-select" class="form-select">
+                                <option value="">-- Select Ticket --</option>
+                                @foreach (var ticket in Model.AvailableTickets)
+                                {
+                                <option value="@ticket.TicketId">@ticket.EventName</option>
+                                }
+                            </select>
+                            <label for="ticket-quantity" class="form-label mt-3">Quantity</label>
+                            <input type="number" id="ticket-quantity" class="form-control" min="1" value="1" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" id="save-ticket" class="btn btn-primary">Add Ticket</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit and Cancel Buttons -->
+        <div class="d-flex justify-content-between mt-4">
+            <button type="submit" class="btn btn-primary px-4 py-2">Save Changes</button>
+            <a asp-action="OrderList" asp-controller="Order" asp-area="Admin" class="btn btn-outline-secondary px-4 py-2">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Delete Ticket Button
+    document.querySelectorAll('.deleteButton').forEach(button => {
+        button.addEventListener("click", function () {
+            const ticketId = button.getAttribute("data-ticket-id");
+            const orderId = button.getAttribute("data-order-id");
+            const quantityInput = button.closest('tr').querySelector('input[type="number"]');
+            const quantity = parseInt(quantityInput.value);
+
+            if (quantity === 0) {
+                button.closest('tr').remove();
+            } else {
+                fetch(`/Admin/Order/RemoveTicketFromOrder?ticketId=${ticketId}&orderId=${orderId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            button.closest('tr').remove();
+                        }
+                    });
+            }
+        });
+    });
+
+    // Add Ticket Button
+    document.getElementById("save-ticket").addEventListener("click", function () {
+        const orderId = @Model.OrderId; // OrderId is passed from the model
+        const ticketId = document.getElementById("ticket-select").value;
+        const quantity = document.getElementById("ticket-quantity").value;
+    
+        if (ticketId && quantity) {
+            fetch(`/Admin/Order/AddTicketToOrder?orderId=${orderId}&ticketId=${ticketId}&quantity=${quantity}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Close the modal and refresh the ticket list (optional)
+                        location.reload();
+                    }
+                });
+        } else {
+            alert("Please select a ticket and quantity.");
+        }
+    });
+    
+</script>

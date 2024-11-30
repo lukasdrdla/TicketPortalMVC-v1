@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using TicketPortalMVC.Application.Services.Interface;
 using TicketPortalMVC.Application.ViewModels;
 using TicketPortalMVC.Domain.Entities;
-using TicketPortalMVC.Infrastructure.Data;
 
 namespace TicketPortalMVC.Application.Services.Implementation;
 
@@ -12,17 +11,27 @@ public class AccountService : IAccountService
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-    private IAccountService _accountServiceImplementation;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public AccountService(UserManager<User> userManager, SignInManager<User> signInManager)
+
+    public AccountService(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _roleManager = roleManager;
     }
     
     public async Task RegisterAsync(RegisterViewModel registerViewModel)
     {
-        
+        if (!await _roleManager.RoleExistsAsync("USER"))
+        {
+            var createRoleResult = await _roleManager.CreateAsync(new IdentityRole("USER"));
+            if (!createRoleResult.Succeeded)
+            {
+                throw new InvalidOperationException("Failed to create 'USER' role: " + string.Join(", ", createRoleResult.Errors.Select(e => e.Description)));
+            }
+        }
+
         var existingUser = await _userManager.FindByEmailAsync(registerViewModel.Email);
         if (existingUser != null)
         {
@@ -53,9 +62,8 @@ public class AccountService : IAccountService
         {
             throw new InvalidOperationException("Failed to assign 'USER' role.");
         }
-        
-
     }
+
 
 
     public async Task LoginAsync(LoginViewModel loginViewModel)

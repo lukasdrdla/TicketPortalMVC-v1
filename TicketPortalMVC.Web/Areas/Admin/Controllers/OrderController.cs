@@ -84,6 +84,12 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
                     TicketId = t.TicketId,
                     EventName = t.Event.Name,
                     Price = t.Price,
+                }).ToList(),
+                AvailableUsers = (await _accountService.GetUsersAsync()).Select(u => new UserViewModel
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName
                 }).ToList()
             };
 
@@ -124,6 +130,20 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
                 return RedirectToAction("OrderList");
             }
 
+            else
+            {
+                var availableTickets = await _ticketService.GetTicketsAsync();
+                order.AvailableTickets = availableTickets.Select(t => new OrderTicketViewModel
+                {
+                    TicketId = t.TicketId,
+                    EventName = t.Event.Name,
+                    Price = t.Price
+                }).ToList();
+                
+            }
+            
+            
+
             return View(order);
         }
 
@@ -146,6 +166,8 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
 
         public async Task<IActionResult> OrderDetail(int id)
         {
+            
+            
             var order = await _orderService.GetOrderByIdAsync(id);
             if (order == null)
             {
@@ -175,6 +197,113 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
         }
         
         
+        [HttpGet]
+        public async Task<IActionResult> OrderEdit(int id)
+        {
+            var orderToedit = await _orderService.GetOrderByIdAsync(id);
+            
+            if (orderToedit == null)
+            {
+                return NotFound();
+            }
+            
+            var model = new OrderEditViewModel()
+            {
+                OrderId = orderToedit.OrderId,
+                UserId = orderToedit.UserId,
+                CreatedAt = orderToedit.CreatedAt,
+                IsPaid = orderToedit.IsPaid,
+                Tickets = orderToedit.OrderTickets.Select(t => new OrderTicketViewModel
+                {
+                    TicketId = t.TicketId,
+                    Quantity = t.Quantity,
+                    EventName = t.Ticket.Event.Name,
+                    Price = t.Ticket.Price
+                }).ToList(),
+                AvailableUsers = (await _accountService.GetUsersAsync()).Select(u => new UserViewModel
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName
+                    
+                }).ToList()
+            };
+            
+            var availableTickets = await _ticketService.GetTicketsAsync();
+            
+            model.AvailableTickets = availableTickets.Select(t => new OrderTicketViewModel
+            {
+                TicketId = t.TicketId,
+                EventName = t.Event.Name,
+                Price = t.Price
+            }).ToList();
+            
+            return View(model);
+        }
+        
+        
+        [HttpPost]
+        public async Task<IActionResult> OrderEdit(OrderEditViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Načtení dostupných uživatelů a lístků pro opětovné zobrazení
+                model.AvailableUsers = (await _accountService.GetUsersAsync()).Select(u => new UserViewModel
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName
+                }).ToList();
+
+                var availableTickets = await _ticketService.GetTicketsAsync();
+                model.AvailableTickets = availableTickets.Select(t => new OrderTicketViewModel
+                {
+                    TicketId = t.TicketId,
+                    EventName = t.Event.Name,
+                    Price = t.Price
+                }).ToList();
+
+                return View(model);
+            }
+
+            var existingOrder = await _orderService.GetOrderByIdAsync(model.OrderId);
+            if (existingOrder == null)
+            {
+                return NotFound();
+            }
+
+            existingOrder.UserId = model.UserId;
+            existingOrder.CreatedAt = model.CreatedAt;
+            existingOrder.IsPaid = model.IsPaid;
+
+            foreach (var ticket in model.Tickets)
+            {
+                var existingTicket = existingOrder.OrderTickets.FirstOrDefault(t => t.TicketId == ticket.TicketId);
+                if (existingTicket != null)
+                {
+                    existingTicket.Quantity = ticket.Quantity;
+                }
+            }
+            
+            existingOrder.Total = existingOrder.OrderTickets.Sum(t => t.Quantity * t.Ticket.Price);
+            
+
+            try
+            {
+                await _orderService.UpdateOrderAsync(existingOrder);
+                return RedirectToAction("OrderList");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+            }
+
+            return View(model);
+        }
+
+
+        
+        
         [HttpPost]
         public async Task<IActionResult> MarkAsPaid(int id)
         {
@@ -185,6 +314,41 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
             }
             return RedirectToAction("OrderDetail", new { id });
         }
+        
+        
+        //remove ticket from order
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveTicketFromOrder(int ticketId, int orderId)
+        {
+            try
+            {
+                await _orderService.RemoveTicketFromOrderAsync(orderId, ticketId);
+                return Ok();  // Pokud je úspěch, vracíme 200 OK
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);  // Pokud dojde k chybě, vrátíme BadRequest s chybovou zprávou
+            }
+
+        }
+
+        
+        //add ticket to order
+
+        [HttpPost]
+        public async Task<IActionResult> AddTicketToOrder(int orderId, int ticketId, int quantity)
+        {
+            await _orderService.AddTicketToOrderAsync(orderId, ticketId, quantity);
+            return RedirectToAction("OrderEdit", new { id = orderId });
+        }
+
+
+
+
+
+
+
 
 
     }

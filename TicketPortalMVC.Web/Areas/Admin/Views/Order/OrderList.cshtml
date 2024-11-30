@@ -53,7 +53,7 @@
                                 <a href="@Url.Action("OrderDetail", "Order", new { id = item.OrderId })" class="btn btn-sm btn-primary me-1" title="Detail">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="@Url.Action("Edit", "Admin", new { id = item.OrderId })" class="btn btn-sm btn-warning me-1" title="Upravit">
+                                <a href="@Url.Action("OrderEdit", "Order", new { id = item.OrderId })" class="btn btn-sm btn-warning me-1" title="Upravit">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                                 <form asp-area="Admin" asp-controller="Order" asp-action="DeleteOrder" asp-route-id="@item.OrderId" class="d-inline" onsubmit="return confirmDelete();" title="Smazat">

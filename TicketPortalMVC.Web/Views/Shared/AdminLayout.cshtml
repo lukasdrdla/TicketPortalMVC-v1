@@ -17,67 +17,75 @@
 
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Navigace -->
-            <nav class="col-md-1 col-lg-1 d-md-block bg-dark sidebar position-fixed">
-                <div class="sidebar-sticky">
-                    <ul class="nav flex-column mt-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" asp-action="Index" asp-area="Admin" asp-controller="DashBoard">
-                                <i class="bi bi-house-door-fill"></i>
-                                <span class="d-block">Dashboard</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" asp-area="Admin" asp-action="UserList" asp-controller="User">
-                                <i class="bi bi-people-fill"></i>
-                                <span class="d-block">Uživatelé</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" asp-action="EventList" asp-area="Admin" asp-controller="Event">
-                                <i class="bi bi-calendar3"></i>
-                                <span class="d-block">Události</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" asp-action="OrderList" asp-area="Admin" asp-controller="Order">
-                                <i class="bi bi-file-earmark-text-fill"></i>
-                                <span class="d-block">Objednávky</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" asp-area="Admin" asp-action="TicketList" asp-controller="Ticket">
-                                <i class="bi bi-ticket-perforated-fill"></i>
-                                <span class="d-block">Vstupenky</span>
-                            </a>
-                        </li>
-                        
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" asp-action="StoreList" asp-area="Admin" asp-controller="Store">
-                            <i class="bi bi-shop "></i>
-                            <span class="d-block">Obchody</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="@Url.Action("Index", "Events")" title="Zpět na web">
-                                <i class="bi bi-arrow-left-circle-fill"></i>
-                                <span class="d-block">Zpět na web</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Horní navigace pro mobilní rozložení -->
+        <nav class="navbar navbar-dark bg-dark d-md-none">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <span class="navbar-brand mb-0 h1">Admin Panel</span>
+        </nav>
 
-            <!-- Hlavní obsah -->
-            <main role="main" class="col-md-10 ms-sm-auto col-lg-10 px-md-4 pt-5">
-                <h1>@ViewData["Title"]</h1>
+        <!-- Boční navigace -->
+        <nav class="col-md-2 bg-dark sidebar collapse d-md-block" id="sidebarMenu">
+            <div class="sidebar-sticky p-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-action="Index" asp-area="Admin" asp-controller="DashBoard">
+                            <i class="bi bi-house-door-fill me-2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-area="Admin" asp-action="UserList" asp-controller="User">
+                            <i class="bi bi-people-fill me-2"></i> Uživatelé
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-action="EventList" asp-area="Admin" asp-controller="Event">
+                            <i class="bi bi-calendar3 me-2"></i> Události
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-action="OrderList" asp-area="Admin" asp-controller="Order">
+                            <i class="bi bi-file-earmark-text-fill me-2"></i> Objednávky
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-action="TicketList" asp-area="Admin" asp-controller="Ticket">
+                            <i class="bi bi-ticket-perforated-fill me-2"></i> Vstupenky
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-action="StoreList" asp-area="Admin" asp-controller="Store">
+                            <i class="bi bi-shop me-2"></i> Obchody
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="@Url.Action("Index", "Events")" title="Zpět na web">
+                            <i class="bi bi-arrow-left-circle-fill me-2"></i> Zpět na web
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Hlavní obsah -->
+        <main class="col-md-10 ms-sm-auto px-md-4 pt-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
+                <h1 class="h2">@ViewData["Title"]</h1>
+            </div>
+            <div>
                 @RenderBody()
-            </main>
-        </div>
+            </div>
+        </main>
     </div>
+</div>
 
+
+
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
@@ -185,6 +193,20 @@
     .card-header {
         border-radius: 20px 20px 0 0 !important;
     }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 1000;
+    }
+    .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+    }
+
 
 </style>
 
