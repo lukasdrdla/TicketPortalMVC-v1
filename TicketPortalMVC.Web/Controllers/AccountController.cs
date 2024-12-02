@@ -10,15 +10,11 @@ public class AccountController : Controller
 {
     
     private readonly IAccountService _accountService;
-    private readonly SignInManager<User> _signInManager;
-    private readonly UserManager<User> _userManager;
     private readonly IOrderService _orderService;
     
-    public AccountController(IAccountService accountService, SignInManager<User> signInManager, UserManager<User> userManager, IOrderService orderService)
+    public AccountController(IAccountService accountService, IOrderService orderService)
     {
         _accountService = accountService;
-        _signInManager = signInManager;
-        _userManager = userManager;
         _orderService = orderService;
     }
     
@@ -80,13 +76,13 @@ public class AccountController : Controller
     
     public async Task<IActionResult> Profile()
     {
-        var user = await _userManager.GetUserAsync(User);
+        var user = await _accountService.GetCurrentUserAsync(User);
         return View(user);
     }
     
     public async Task<IActionResult> UserOrders()
     {
-        var user = await _userManager.GetUserAsync(User);
+        var user = await _accountService.GetCurrentUserAsync(User);
         var orders = await _orderService.GetUserOrdersAsync(user.Id);
         return View(orders);
     }
@@ -95,7 +91,7 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Profile(User user)
     {
-        var currentUser = await _userManager.GetUserAsync(User);
+        var currentUser = await _accountService.GetCurrentUserAsync(User);
         currentUser.FirstName = user.FirstName;
         currentUser.LastName = user.LastName;
         currentUser.Address = user.Address;
@@ -104,16 +100,16 @@ public class AccountController : Controller
         currentUser.PostalCode = user.PostalCode;
         currentUser.PhoneNumber = user.PhoneNumber;
         
-        var result = await _userManager.UpdateAsync(currentUser);
+        var result = await _accountService.UpdateUserAsync(currentUser);
         
         if (!result.Succeeded)
         {
-            ModelState.AddModelError(string.Empty, "Failed to update user");
+            ModelState.AddModelError(string.Empty, "Chybka při ukládání změn");
             return View(currentUser);
         }
         else
         {
-            TempData["SuccessMessage"] = "Profile updated successfully";
+            TempData["SuccessMessage"] = "Profil byl úspěšně uložen";
         }
         
         

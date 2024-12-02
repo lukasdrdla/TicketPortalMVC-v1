@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TicketPortalMVC.Application.Services.Interface;
@@ -91,7 +92,18 @@ public class AccountService : IAccountService
             throw new Exception("An error occurred during login", ex);
         }
     }
-    
+
+
+    public async Task<User> GetCurrentUserAsync(ClaimsPrincipal principal)
+    {
+        var user = await _userManager.GetUserAsync(principal);
+        if (user == null)
+        {
+            throw new KeyNotFoundException("User not found");
+        }
+        return user;
+    }
+
     public async Task<List<User>> GetUsersAsync()
     {
         var users = await _userManager.Users.ToListAsync();
@@ -110,12 +122,11 @@ public class AccountService : IAccountService
         return user;
     }
 
-
-    public Task UpdateUserAsync(User user)
+    public async Task<IdentityResult> UpdateUserAsync(User user)
     {
-        throw new NotImplementedException();
-       
+        return await _userManager.UpdateAsync(user);
     }
+
 
     public async Task DeleteUserAsync(int id)
     {

@@ -10,19 +10,19 @@ namespace TicketPortalMVC.Application.Services.Implementation;
 public class EventRatingService : IEventRatingService
 {
     private readonly ApplicationDbContext _context;
-    private readonly UserManager<User> _userManager;
+    private readonly IAccountService _accountService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     
-    public EventRatingService(ApplicationDbContext context, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor)
+    public EventRatingService(ApplicationDbContext context, IAccountService accountService, IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
-        _userManager = userManager;
+        _accountService = accountService;
         _httpContextAccessor = httpContextAccessor;
     }
     
     public async Task AddRatingAsync(int eventId, int rating, string comment)
     {
-        var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+        var user = await _accountService.GetCurrentUserAsync(_httpContextAccessor.HttpContext.User);
         
         if (user == null)
         {
@@ -66,10 +66,5 @@ public class EventRatingService : IEventRatingService
         return ratings;
     }
 
-    public async Task<double> GetAverageRatingAsync(int eventId)
-    {
-        var ratings = await GetRatingsAsync(eventId);
-        return ratings.Count > 0 ? ratings.Average(x => x.Rating) : 0;
-        
-    }
+
 }

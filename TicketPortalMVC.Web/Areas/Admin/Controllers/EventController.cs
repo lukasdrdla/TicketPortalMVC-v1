@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Elfie.Serialization;
 using TicketPortalMVC.Application.Services.Interface;
 using TicketPortalMVC.Application.ViewModels;
 using TicketPortalMVC.Domain.Entities;
@@ -16,13 +14,11 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
 
         private readonly IEventService _eventService;
         private readonly IEventRatingService _eventRatingService;
-        private readonly ITicketService _ticketService;
         
-        public EventController(IEventService eventService, IEventRatingService eventRatingService, ITicketService ticketService)
+        public EventController(IEventService eventService, IEventRatingService eventRatingService)
         {
             _eventService = eventService;
             _eventRatingService = eventRatingService;
-            _ticketService = ticketService;
         }
         
    

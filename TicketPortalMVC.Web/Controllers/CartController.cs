@@ -61,7 +61,7 @@ public class CartController : Controller
         
         if (cartItems.Count == 0)
         {
-            TempData["Error"] = "Your cart is empty";
+            TempData["Error"] = "Tvůj košík je prázdný.";
             return RedirectToAction("Index");
         }
         

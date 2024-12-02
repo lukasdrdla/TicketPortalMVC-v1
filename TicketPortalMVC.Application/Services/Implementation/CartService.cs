@@ -9,7 +9,6 @@ namespace TicketPortalMVC.Application.Services.Implementation;
 public class CartService : ICartService
 {
     private readonly ApplicationDbContext _context;
-    private ICartService _cartServiceImplementation;
 
     public CartService(ApplicationDbContext context)
     {
@@ -30,7 +29,6 @@ public class CartService : ICartService
 
     public async Task AddToCart(string userId, int ticketId, int quantity)
     {
-        // Získání aktivního košíku uživatele
         var cart = await _context.Cart
             .Include(c => c.CartItems)
             .FirstOrDefaultAsync(c => c.UserId == userId && c.IsActive);
@@ -47,7 +45,6 @@ public class CartService : ICartService
             _context.Cart.Add(cart);
         }
 
-        // Získání položky z košíku, pokud již existuje
         var cartItem = cart.CartItems.FirstOrDefault(ci => ci.TicketId == ticketId);
         if (cartItem == null)
         {
@@ -87,13 +84,11 @@ public class CartService : ICartService
             .Include(c => c.CartItems)
             .FirstOrDefaultAsync(c => c.UserId == userId && c.IsActive);
 
-        // Pokud košík neexistuje, vrátíme 0
         if (cart == null)
         {
             return 0;
         }
 
-        // Spočítáme celkový počet položek v košíku
         return cart.CartItems.Sum(ci => ci.Quantity);
     }
 

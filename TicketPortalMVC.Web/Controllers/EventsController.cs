@@ -79,7 +79,7 @@ public class EventsController : Controller
             return RedirectToAction("EventDetail", new { id = eventId });
         }
     
-        TempData["SuccessMessage"] = "Your rating has been successfully submitted.";
+        TempData["SuccessMessage"] = "Hodnocení bylo úspěšně přidáno.";
         
         return RedirectToAction("EventDetail", new { id = eventId });
     }
