@@ -88,21 +88,54 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
         {
             return View();
         }
+        
         [HttpPost]
-        public async Task<IActionResult> EventCreate(Event @event)
+        public async Task<IActionResult> EventCreate(EventCreateViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                return View(model);
+            }
+
+            string imageUrl = string.Empty;
+
+            if (model.Image != null && model.Image.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+        
+                if (!Directory.Exists(uploadsFolder))
                 {
-                    Console.WriteLine(error.ErrorMessage);
+                    Directory.CreateDirectory(uploadsFolder);
                 }
 
-                return View(@event);
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(model.Image.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.Image.CopyToAsync(fileStream);
+                }
+
+                imageUrl = $"/uploads/{uniqueFileName}";
             }
+
+            var @event = new Event
+            {
+                Name = model.Name,
+                Description = model.Description,
+                Location = model.Location,
+                Date = model.Date,
+                Capacity = model.Capacity,
+                CreatedAt = DateTime.Now,
+                ImageUrl = imageUrl
+            };
 
             await _eventService.CreateEventAsync(@event);
             return RedirectToAction("EventList");
         }
+
+
+
+
     }
 }

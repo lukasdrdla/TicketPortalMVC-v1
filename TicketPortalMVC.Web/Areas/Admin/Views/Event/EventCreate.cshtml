@@ -1,4 +1,4 @@
-﻿@model Event
+﻿@model EventCreateViewModel
 
 @{
     Layout = "~/Views/Shared/AdminLayout.cshtml";
@@ -14,12 +14,13 @@
                 </div>
 
                 <div class="card-body py-4">
-                    <form asp-area="Admin" asp-controller="Event" asp-action="EventCreate" method="post">
+                    <form asp-area="Admin" asp-controller="Event" asp-action="EventCreate" method="post" enctype="multipart/form-data">
                         <div class="mb-4">
-                            <label asp-for="@Model.ImageUrl" class="form-label fw-bold">Obrázek</label>
-                            <input asp-for="@Model.ImageUrl" class="form-control" required />
-                            <span asp-validation-for="@Model.ImageUrl" class="text-danger"></span>
+                            <label asp-for="Image" class="form-label fw-bold">Nahrát obrázek</label>
+                            <input asp-for="Image" class="form-control" type="file" accept="image/*" />
+                            <span asp-validation-for="Image" class="text-danger"></span>
                         </div>
+
 
                         <div class="mb-4">
                             <label asp-for="@Model.Name" class="form-label fw-bold">Název</label>
