@@ -326,10 +326,9 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
                 return RedirectToAction("RoleCreate");
             }
 
-            // Debug log
-            Console.WriteLine($"Role nalezena: {roleToEdit.Name}");
+            
 
-            roleToEdit.Name = newRole; // Zde by mělo být nové jméno, pokud chcete změnit název
+            roleToEdit.Name = newRole;
             var result = await _roleManager.UpdateAsync(roleToEdit);
 
             if (!result.Succeeded)

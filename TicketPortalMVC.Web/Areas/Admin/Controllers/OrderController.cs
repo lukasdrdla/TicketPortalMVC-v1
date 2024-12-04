@@ -35,7 +35,6 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
                 return Json(new List<object>());
             }
 
-            // Předpokládáme, že máte službu pro získání uživatelů (UserService)
             var users = await _accountService.SearchUsersAsync(term);
 
             // Vracíme seznam uživatelů ve formátu, který očekáváte na frontendové straně
@@ -51,7 +50,6 @@ namespace TicketPortalMVC.Web.Areas.Admin.Controllers
                 return Json(new List<object>());
             }
 
-            // Předpokládáme, že máte službu pro získání eventů (EventService)
             var events = await _ticketService.SearchTicketsAsync(term);
 
             // Vracíme seznam eventů ve formátu, který očekáváte na frontendové straně
