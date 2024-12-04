@@ -72,11 +72,11 @@ public class EventService : IEventService
         
         existingEvent.Name = @event.Name;
         existingEvent.Description = @event.Description;
-        existingEvent.ImageUrl = @event.ImageUrl;
         existingEvent.Location = @event.Location;
         existingEvent.Date = @event.Date;
         existingEvent.Capacity = @event.Capacity;
         existingEvent.CreatedAt = @event.CreatedAt;
+        existingEvent.ImageUrl = @event.ImageUrl;
 
         try
         {
